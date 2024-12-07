@@ -1,0 +1,13 @@
+export org.kiss.rbac.entity.Role
+
+specification RoleSpecification {
+    like/i(name)
+}
+
+RoleView {
+    #allScalars
+}
+
+input RoleInput {
+    #allScalars(this)
+}

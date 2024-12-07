@@ -1,0 +1,13 @@
+export org.kiss.rbac.entity.Menu
+
+MenuView {
+    #allScalars
+    id(parent)
+    children*
+}
+
+input MenuInput {
+    #allScalars(this)
+    -order
+    id(parent)
+}

@@ -1,0 +1,29 @@
+export org.kiss.rbac.entity.User
+
+specification UserSpecification {
+    like/i(username)
+    flat(roles) {
+        valueIn(id) as roleIds
+    }
+}
+
+UserView {
+    #allScalars
+    -password
+    id(roles) as roleIds
+}
+
+UserPrincipal {
+    id
+    username
+    password
+    roles {
+        name
+    }
+}
+
+input UserInput {
+    #allScalars(this)
+    -password
+    id(roles)? as roleIds
+}
