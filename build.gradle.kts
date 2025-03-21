@@ -1,11 +1,13 @@
 import io.freefair.gradle.plugins.aspectj.AjcAction
 
 plugins {
-    kotlin("jvm") version "1.9.25"
-    kotlin("plugin.spring") version "1.9.25"
+    kotlin("jvm") version "2.0.21"
+    kotlin("plugin.spring") version "2.0.21"
+    id("com.google.devtools.ksp") version "2.0.21+"
     id("org.springframework.boot") version "3.4.3"
     id("io.spring.dependency-management") version "1.1.7"
     id("io.freefair.aspectj.post-compile-weaving") version "8.13"
+    jacoco
 }
 
 group = "kiss"
@@ -36,6 +38,9 @@ dependencies {
     testImplementation("org.testcontainers:postgresql")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation("org.aspectj:aspectjrt:1.9.21.1")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.2.0")
+    implementation("org.babyfish.jimmer:jimmer-spring-boot-starter:latest.release")
+    ksp("org.babyfish.jimmer:jimmer-ksp:latest.release")
 
     testImplementation("io.kotest:kotest-runner-junit5:5.9.1")
     testImplementation("io.kotest:kotest-assertions-core:5.9.1")
@@ -48,14 +53,18 @@ kotlin {
     }
 }
 
-tasks.withType<Test>().configureEach {
-    useJUnitPlatform()
-}
-
 tasks.compileTestKotlin {
     configure<AjcAction> {
         options {
             aspectpath.setFrom(sourceSets.main.get().output)
         }
     }
+}
+
+tasks.test {
+    useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
+}
+tasks.jacocoTestReport {
+    dependsOn(tasks.test) // tests are required to run before generating the report
 }

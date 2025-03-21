@@ -1,0 +1,17 @@
+package kiss.web
+
+import kiss.system.role.RoleProps
+import org.babyfish.jimmer.sql.exception.SaveException
+import org.babyfish.jimmer.sql.runtime.ExceptionTranslator
+import org.springframework.stereotype.Component
+
+@Component
+class NotUniqueExceptionTranslator : ExceptionTranslator<SaveException.NotUnique> {
+
+    override fun translate(ex: SaveException.NotUnique, args: ExceptionTranslator.Args): Exception? {
+        return when {
+            ex.isMatched(RoleProps.NAME) -> BusinessException("角色名称已存在")
+            else -> null
+        }
+    }
+}

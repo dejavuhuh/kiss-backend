@@ -8,11 +8,9 @@ import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.reflect.MethodSignature
 
 @Aspect
-class CacheableAspect {
+object CacheableAspect {
 
-    companion object {
-        lateinit var redisClient: RedisClient
-    }
+    lateinit var redisClient: RedisClient
 
     @Around("@annotation(Cacheable) && execution(* *(..))")
     fun intercept(joinPoint: ProceedingJoinPoint): Any? {

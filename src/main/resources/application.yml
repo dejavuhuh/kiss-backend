@@ -1,0 +1,18 @@
+jimmer:
+  language: kotlin
+  client:
+    openapi:
+      properties:
+        info:
+          title: Kiss
+          version: 1.0.0
+          description: Keep It Simple Stupid
+      ui-path: /openapi.html
+      path: /openapi.yml
+    ts:
+      path: /ts.zip
+      mutable: true
+spring:
+  sql:
+    init:
+      mode: always

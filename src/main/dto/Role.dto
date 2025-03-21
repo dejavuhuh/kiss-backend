@@ -1,0 +1,11 @@
+export kiss.system.role.Role
+
+specification RoleSpecification {
+    like(name)
+    ge(createdAt)
+    le(createdAt)
+}
+
+input RoleInput {
+    #allScalars(this)
+}
