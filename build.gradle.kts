@@ -41,6 +41,8 @@ dependencies {
     implementation("com.github.ben-manes.caffeine:caffeine:3.2.0")
     implementation("org.babyfish.jimmer:jimmer-spring-boot-starter:latest.release")
     ksp("org.babyfish.jimmer:jimmer-ksp:latest.release")
+    implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
+    implementation("org.mindrot:jbcrypt:0.4")
 
     testImplementation("io.kotest:kotest-runner-junit5:5.9.1")
     testImplementation("io.kotest:kotest-assertions-core:5.9.1")

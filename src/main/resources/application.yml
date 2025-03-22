@@ -12,7 +12,12 @@ jimmer:
     ts:
       path: /ts.zip
       mutable: true
+  mutation-transaction-required: true
+  database-validation-mode: error
 spring:
   sql:
     init:
       mode: always
+
+server:
+  port: 9000

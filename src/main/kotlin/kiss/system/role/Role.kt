@@ -1,6 +1,7 @@
 package kiss.system.role
 
-import kiss.BaseEntity
+import kiss.jimmer.BaseEntity
+import kiss.jimmer.Creator
 import org.babyfish.jimmer.sql.Entity
 import org.babyfish.jimmer.sql.Key
 
@@ -8,7 +9,7 @@ import org.babyfish.jimmer.sql.Key
  * 角色
  */
 @Entity
-interface Role : BaseEntity {
+interface Role : BaseEntity, Creator {
 
     /**
      * 角色名称

@@ -1,4 +1,4 @@
-package kiss
+package kiss.jimmer
 
 import org.babyfish.jimmer.sql.GeneratedValue
 import org.babyfish.jimmer.sql.GenerationType
@@ -19,5 +19,5 @@ interface BaseEntity {
     /**
      * 创建时间
      */
-    val createdAt: Instant
+    val createdTime: Instant
 }

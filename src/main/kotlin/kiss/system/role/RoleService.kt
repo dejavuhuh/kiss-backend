@@ -5,12 +5,15 @@ import kiss.system.role.dto.RoleSpecification
 import org.babyfish.jimmer.Page
 import org.babyfish.jimmer.client.FetchBy
 import org.babyfish.jimmer.sql.kt.KSqlClient
+import org.babyfish.jimmer.sql.kt.ast.expression.desc
 import org.babyfish.jimmer.sql.kt.fetcher.newFetcher
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
 /**
  * 角色服务
  */
+@Transactional
 @RestController
 @RequestMapping("/roles")
 class RoleService(val sql: KSqlClient) {
@@ -30,6 +33,7 @@ class RoleService(val sql: KSqlClient) {
     ): Page<@FetchBy("LIST_FETCHER") Role> {
         return sql.createQuery(Role::class) {
             where(specification)
+            orderBy(table.createdTime.desc())
             select(table.fetch(LIST_FETCHER))
         }.fetchPage(pageIndex, pageSize)
     }
@@ -59,7 +63,6 @@ class RoleService(val sql: KSqlClient) {
      */
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: Int) {
-        Thread.sleep(1000)
         sql.deleteById(Role::class, id)
     }
 
