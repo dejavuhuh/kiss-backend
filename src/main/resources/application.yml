@@ -15,9 +15,14 @@ jimmer:
   mutation-transaction-required: true
   database-validation-mode: error
 spring:
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: always
+    properties:
+      org.quartz.jobStore.driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
   sql:
     init:
       mode: always
-
 server:
   port: 9000
