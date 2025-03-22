@@ -5,14 +5,13 @@ import org.babyfish.jimmer.sql.kt.ast.expression.eq
 import org.babyfish.jimmer.sql.kt.ast.expression.gt
 import org.springframework.stereotype.Component
 import java.time.Instant
-import java.util.*
 import kotlin.time.Duration
 import kotlin.time.toJavaDuration
 
 @Component
 class SessionRepository(val sql: KSqlClient) {
 
-    fun get(token: UUID): Int? {
+    fun get(token: String): Int? {
         return sql.createQuery(Session::class) {
             where(table.token eq token)
             where(table.expiredTime gt Instant.now())
@@ -20,7 +19,7 @@ class SessionRepository(val sql: KSqlClient) {
         }.fetchOneOrNull()
     }
 
-    fun set(token: UUID, userId: Int, expiration: Duration) {
+    fun set(token: String, userId: Int, expiration: Duration) {
         sql.insert(Session {
             this.token = token
             this.userId = userId
@@ -28,7 +27,7 @@ class SessionRepository(val sql: KSqlClient) {
         })
     }
 
-    fun delete(token: UUID) {
+    fun delete(token: String) {
         sql.deleteById(Session::class, token)
     }
 }

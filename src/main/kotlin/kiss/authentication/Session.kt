@@ -5,13 +5,12 @@ import org.babyfish.jimmer.sql.Entity
 import org.babyfish.jimmer.sql.Id
 import org.babyfish.jimmer.sql.OneToOne
 import java.time.Instant
-import java.util.*
 
 @Entity
 interface Session {
 
     @Id
-    val token: UUID
+    val token: String
 
     @OneToOne
     val user: User

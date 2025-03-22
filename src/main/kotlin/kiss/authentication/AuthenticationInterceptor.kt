@@ -3,13 +3,12 @@ package kiss.authentication
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.web.servlet.HandlerInterceptor
-import java.util.*
 
 class AuthenticationException(message: String) : Exception(message)
 
 class AuthenticationInterceptor(val sessionRepository: SessionRepository) : HandlerInterceptor {
 
-    val whiteList = listOf("/sign-in", "/sign-up")
+    val whiteList = listOf("/sign-in", "/sign-up", "/ts.zip")
 
     override fun preHandle(
         request: HttpServletRequest,
@@ -31,7 +30,7 @@ class AuthenticationInterceptor(val sessionRepository: SessionRepository) : Hand
         }
 
         val token = authorization.substring(7)
-        val userId = sessionRepository.get(UUID.fromString(token))
+        val userId = sessionRepository.get(token)
         if (userId == null) {
             throw AuthenticationException("Token is invalid")
         }

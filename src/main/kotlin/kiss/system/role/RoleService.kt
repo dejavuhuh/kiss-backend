@@ -30,11 +30,11 @@ class RoleService(val sql: KSqlClient) {
         @RequestParam(required = false) pageIndex: Int = 0,
         @RequestParam(required = false) pageSize: Int = 10,
         @ModelAttribute specification: RoleSpecification,
-    ): Page<@FetchBy("LIST_FETCHER") Role> {
+    ): Page<@FetchBy("LIST") Role> {
         return sql.createQuery(Role::class) {
             where(specification)
             orderBy(table.createdTime.desc())
-            select(table.fetch(LIST_FETCHER))
+            select(table.fetch(LIST))
         }.fetchPage(pageIndex, pageSize)
     }
 
@@ -77,8 +77,11 @@ class RoleService(val sql: KSqlClient) {
     }
 
     companion object {
-        val LIST_FETCHER = newFetcher(Role::class).by {
+        val LIST = newFetcher(Role::class).by {
             allScalarFields()
+            creator {
+                username()
+            }
         }
     }
 }
