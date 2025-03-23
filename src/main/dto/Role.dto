@@ -1,7 +1,7 @@
 export kiss.system.role.Role
 
 specification RoleSpecification {
-    like(name)
+    like/i(name)
     ge(createdTime)
     le(createdTime)
 }

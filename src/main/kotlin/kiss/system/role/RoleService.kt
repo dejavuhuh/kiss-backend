@@ -27,8 +27,8 @@ class RoleService(val sql: KSqlClient) {
      */
     @GetMapping
     fun list(
-        @RequestParam(required = false) pageIndex: Int = 0,
-        @RequestParam(required = false) pageSize: Int = 10,
+        @RequestParam pageIndex: Int,
+        @RequestParam pageSize: Int,
         @ModelAttribute specification: RoleSpecification,
     ): Page<@FetchBy("LIST") Role> {
         return sql.createQuery(Role::class) {
