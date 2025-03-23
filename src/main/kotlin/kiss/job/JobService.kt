@@ -3,9 +3,7 @@ package kiss.job
 import jakarta.annotation.PostConstruct
 import org.quartz.*
 import org.quartz.impl.matchers.GroupMatcher
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/jobs")
@@ -47,9 +45,15 @@ class JobService(
             .getJobKeys(GroupMatcher.anyGroup())
             .map {
                 val jobDetail = scheduler.getJobDetail(it)
-                val triggers = scheduler.getTriggersOfJob(it)
-                JobView(jobDetail, triggers[0] as CronTrigger)
+                val trigger = scheduler
+                    .getTriggersOfJob(it)
+                    .first { it is CronTrigger }
+                JobView(jobDetail, trigger as CronTrigger)
             }
+    }
 
+    @PostMapping("/{name}/trigger")
+    fun trigger(@PathVariable name: String) {
+        scheduler.triggerJob(JobKey.jobKey(name))
     }
 }
