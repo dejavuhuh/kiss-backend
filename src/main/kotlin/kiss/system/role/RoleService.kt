@@ -25,16 +25,16 @@ class RoleService(val sql: KSqlClient) {
      * @param pageSize 每页大小
      * @param specification 查询条件
      */
-    @GetMapping
-    fun list(
+    @GetMapping("/page")
+    fun page(
         @RequestParam pageIndex: Int,
         @RequestParam pageSize: Int,
         @ModelAttribute specification: RoleSpecification,
-    ): Page<@FetchBy("LIST") Role> {
+    ): Page<@FetchBy("PAGE") Role> {
         return sql.createQuery(Role::class) {
             where(specification)
             orderBy(table.createdTime.desc())
-            select(table.fetch(LIST))
+            select(table.fetch(PAGE))
         }.fetchPage(pageIndex, pageSize)
     }
 
@@ -77,7 +77,7 @@ class RoleService(val sql: KSqlClient) {
     }
 
     companion object {
-        val LIST = newFetcher(Role::class).by {
+        val PAGE = newFetcher(Role::class).by {
             allScalarFields()
             creator {
                 username()
