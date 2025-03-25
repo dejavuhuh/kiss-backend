@@ -2,8 +2,14 @@ export kiss.system.role.Role
 
 specification RoleSpecification {
     like/i(name)
+
     ge(createdTime)
+
     le(createdTime)
+
+    flat(permissions) {
+        id as permissionId
+    }
 }
 
 input RoleInput {
