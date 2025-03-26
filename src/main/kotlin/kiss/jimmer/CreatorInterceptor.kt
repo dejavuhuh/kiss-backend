@@ -14,7 +14,7 @@ class CreatorInterceptor : DraftInterceptor<Creator, CreatorDraft> {
         }
 
         if (original == null) {
-            val currentUserId = CurrentUserIdHolder.get() ?: throw IllegalStateException("未设置当前用户ID")
+            val currentUserId = CurrentUserIdHolder.get()
             draft.creatorId = currentUserId
         }
     }

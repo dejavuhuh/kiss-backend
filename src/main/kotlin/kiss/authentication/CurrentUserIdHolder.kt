@@ -1,9 +1,9 @@
 package kiss.authentication
 
 object CurrentUserIdHolder {
-    val holder = ThreadLocal<Int?>()
+    val holder = ThreadLocal<Int>()
 
-    fun get(): Int? {
+    fun get(): Int {
         return holder.get()
     }
 

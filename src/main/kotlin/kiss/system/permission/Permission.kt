@@ -18,11 +18,17 @@ interface Permission : BaseEntity {
     @ManyToOne
     val parent: Permission?
 
+    @IdView
+    val parentId: Int?
+
     @OneToMany(mappedBy = "parent")
     val children: List<Permission>
 
     @ManyToMany(mappedBy = "permissions")
     val roles: List<Role>
+
+    @IdView("roles")
+    val roleIds: List<Int>
 }
 
 enum class PermissionType {

@@ -3,5 +3,4 @@ export kiss.system.permission.Permission
 input PermissionInput {
     #allScalars(this)
     id(parent)
-    id(roles) as roleIds
 }

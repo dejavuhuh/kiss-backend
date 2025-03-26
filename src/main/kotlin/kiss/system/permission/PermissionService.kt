@@ -1,6 +1,7 @@
 package kiss.system.permission
 
 import kiss.system.permission.dto.PermissionInput
+import kiss.system.role.id
 import org.babyfish.jimmer.client.FetchBy
 import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.babyfish.jimmer.sql.kt.ast.expression.isNull
@@ -11,17 +12,10 @@ import org.springframework.web.bind.annotation.*
 @Transactional
 @RestController
 @RequestMapping("/permissions")
-class PermissionService(
-    val sql: KSqlClient,
-    val validator: Validator,
-) {
+class PermissionService(val sql: KSqlClient) {
 
     @PostMapping
     fun create(@RequestBody input: PermissionInput) {
-        if (input.parentId != null) {
-            // 角色必须与父权限绑定后，才能绑定到子权限上
-            validator.checkIfRolesAreBoundToPermission(input.roleIds, input.parentId)
-        }
         sql.insert(input)
     }
 
@@ -33,10 +27,36 @@ class PermissionService(
         }
     }
 
+    @PostMapping("/{id}/bindRoles")
+    fun bindRoles(@PathVariable id: Int, @RequestBody roleIds: List<Int>) {
+        sql.save(Permission {
+            this.id = id
+            this.roleIds = roleIds
+        })
+    }
+
+    @DeleteMapping("/{id}")
+    fun delete(@PathVariable id: Int) {
+        sql.deleteById(Permission::class, id)
+    }
+
     companion object {
         val LIST = newFetcher(Permission::class).by {
             allScalarFields()
+            parentId()
+            roles({
+                filter {
+                    orderBy(table.id)
+                }
+            }) {
+                name()
+            }
             `children*`()
+        }
+        val BOUND_ROLES = newFetcher(Permission::class).by {
+            roles {
+                name()
+            }
         }
     }
 }

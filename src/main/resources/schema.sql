@@ -55,3 +55,12 @@ CREATE TABLE IF NOT EXISTS role_permission_mapping
     FOREIGN KEY (role_id) REFERENCES role,
     FOREIGN KEY (permission_id) REFERENCES permission
 );
+
+CREATE TABLE IF NOT EXISTS user_role_mapping
+(
+    user_id integer NOT NULL,
+    role_id integer NOT NULL,
+    PRIMARY KEY (user_id, role_id),
+    FOREIGN KEY (user_id) REFERENCES "user",
+    FOREIGN KEY (role_id) REFERENCES role
+);

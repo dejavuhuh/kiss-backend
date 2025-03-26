@@ -49,6 +49,7 @@ class RoleService(val sql: KSqlClient) {
     fun list(@ModelAttribute specification: RoleSpecification): List<@FetchBy("LIST") Role> {
         return sql.executeQuery(Role::class) {
             where(specification)
+            orderBy(table.id)
             select(table.fetch(LIST))
         }
     }
