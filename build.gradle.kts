@@ -32,7 +32,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     runtimeOnly("org.postgresql:postgresql")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(group = "org.mockito" )
+    }
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.testcontainers:junit-jupiter")

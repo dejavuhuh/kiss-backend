@@ -5,9 +5,12 @@ import kiss.TestcontainersConfiguration
 import kiss.system.permission.Permission
 import kiss.system.permission.PermissionType
 import kiss.system.permission.addBy
+import kiss.system.permission.id
 import kiss.system.role.dto.RoleSpecification
 import kiss.withTestUser
 import org.babyfish.jimmer.sql.kt.KSqlClient
+import org.babyfish.jimmer.sql.kt.ast.table.source
+import org.babyfish.jimmer.sql.kt.ast.table.sourceId
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest

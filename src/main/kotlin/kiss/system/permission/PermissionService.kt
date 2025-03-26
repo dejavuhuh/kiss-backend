@@ -11,10 +11,17 @@ import org.springframework.web.bind.annotation.*
 @Transactional
 @RestController
 @RequestMapping("/permissions")
-class PermissionService(val sql: KSqlClient) {
+class PermissionService(
+    val sql: KSqlClient,
+    val validator: Validator,
+) {
 
     @PostMapping
     fun create(@RequestBody input: PermissionInput) {
+        if (input.parentId != null) {
+            // 角色必须与父权限绑定后，才能绑定到子权限上
+            validator.checkIfRolesAreBoundToPermission(input.roleIds, input.parentId)
+        }
         sql.insert(input)
     }
 
