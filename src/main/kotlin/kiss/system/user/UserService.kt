@@ -9,7 +9,7 @@ import org.babyfish.jimmer.sql.kt.fetcher.newFetcher
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 class UserService(val sql: KSqlClient) {
 
     @GetMapping

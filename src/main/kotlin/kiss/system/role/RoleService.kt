@@ -2,10 +2,16 @@ package kiss.system.role
 
 import kiss.system.role.dto.RoleInput
 import kiss.system.role.dto.RoleSpecification
+import kiss.system.user.User
+import kiss.system.user.UserService
+import kiss.system.user.createdTime
+import kiss.system.user.dto.UserSpecification
+import kiss.system.user.roles
 import org.babyfish.jimmer.Page
 import org.babyfish.jimmer.client.FetchBy
 import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.babyfish.jimmer.sql.kt.ast.expression.desc
+import org.babyfish.jimmer.sql.kt.ast.expression.eq
 import org.babyfish.jimmer.sql.kt.fetcher.newFetcher
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
@@ -19,39 +25,35 @@ import org.springframework.web.bind.annotation.*
 class RoleService(val sql: KSqlClient) {
 
     /**
-     * 分页查询
-     *
-     * @param pageIndex 页码
-     * @param pageSize 每页大小
-     * @param specification 查询条件
-     * @return 角色分页
-     */
-    @GetMapping("/page")
-    fun page(
-        @RequestParam pageIndex: Int,
-        @RequestParam pageSize: Int,
-        @ModelAttribute specification: RoleSpecification,
-    ): Page<@FetchBy("PAGE") Role> {
-        return sql.createQuery(Role::class) {
-            where(specification)
-            orderBy(table.createdTime.desc())
-            select(table.fetch(PAGE))
-        }.fetchPage(pageIndex, pageSize)
-    }
-
-    /**
      * 列表查询
      *
      * @param specification 查询条件
      * @return 角色列表
      */
     @GetMapping
-    fun list(@ModelAttribute specification: RoleSpecification): List<@FetchBy("LIST") Role> {
+    fun list(specification: RoleSpecification): List<@FetchBy("LIST") Role> {
         return sql.executeQuery(Role::class) {
             where(specification)
             orderBy(table.id)
             select(table.fetch(LIST))
         }
+    }
+
+    @GetMapping("/{id}/users")
+    fun users(
+        @PathVariable id: Int,
+        @RequestParam pageIndex: Int,
+        @RequestParam pageSize: Int,
+        @ModelAttribute specification: UserSpecification,
+    ): Page<@FetchBy(value = "LIST", ownerType = UserService::class) User> {
+        return sql.createQuery(User::class) {
+            where(specification)
+            where(table.roles {
+                this.id.eq(id)
+            })
+            orderBy(table.createdTime.desc())
+            select(table.fetch(UserService.Companion.LIST))
+        }.fetchPage(pageIndex, pageSize)
     }
 
     /**
@@ -93,14 +95,11 @@ class RoleService(val sql: KSqlClient) {
     }
 
     companion object {
-        val PAGE = newFetcher(Role::class).by {
+        val LIST = newFetcher(Role::class).by {
             allScalarFields()
             creator {
                 username()
             }
-        }
-        val LIST = newFetcher(Role::class).by {
-            name()
         }
     }
 }
