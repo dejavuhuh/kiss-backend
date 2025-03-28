@@ -1,9 +1,13 @@
 package kiss.system.permission
 
 import kiss.system.permission.dto.PermissionInput
+import kiss.system.role.Role
+import kiss.system.role.by
 import kiss.system.role.id
+import kiss.system.role.permissions
 import org.babyfish.jimmer.client.FetchBy
 import org.babyfish.jimmer.sql.kt.KSqlClient
+import org.babyfish.jimmer.sql.kt.ast.expression.eq
 import org.babyfish.jimmer.sql.kt.ast.expression.isNull
 import org.babyfish.jimmer.sql.kt.fetcher.newFetcher
 import org.springframework.transaction.annotation.Transactional
@@ -24,6 +28,16 @@ class PermissionService(val sql: KSqlClient) {
         return sql.executeQuery(Permission::class) {
             where(table.parentId.isNull())
             select(table.fetch(LIST))
+        }
+    }
+
+    @GetMapping("/{id}/roles")
+    fun roles(@PathVariable id: Int): List<@FetchBy("PERMISSION_ROLE") Role> {
+        return sql.executeQuery(Role::class) {
+            where(table.permissions {
+                this.id eq id
+            })
+            select(table.fetch(PERMISSION_ROLE))
         }
     }
 
@@ -53,10 +67,8 @@ class PermissionService(val sql: KSqlClient) {
             }
             `children*`()
         }
-        val BOUND_ROLES = newFetcher(Permission::class).by {
-            roles {
-                name()
-            }
+        val PERMISSION_ROLE = newFetcher(Role::class).by {
+            name()
         }
     }
 }
