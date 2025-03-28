@@ -1,34 +1,25 @@
 package kiss.system.user
 
 import kiss.system.user.dto.UserSpecification
-import org.babyfish.jimmer.Page
 import org.babyfish.jimmer.client.FetchBy
+import org.babyfish.jimmer.client.meta.DefaultFetcherOwner
 import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.babyfish.jimmer.sql.kt.ast.expression.desc
-import org.babyfish.jimmer.sql.kt.fetcher.newFetcher
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/users")
+@DefaultFetcherOwner(UserFetchers::class)
 class UserService(val sql: KSqlClient) {
 
     @GetMapping
-    fun list(
-        @RequestParam pageIndex: Int,
-        @RequestParam pageSize: Int,
-        @ModelAttribute specification: UserSpecification,
-    ): Page<@FetchBy("LIST") User> {
-        return sql.createQuery(User::class) {
+    fun list(specification: UserSpecification): List<@FetchBy("LIST_ITEM") User> {
+        return sql.executeQuery(User::class) {
             where(specification)
             orderBy(table.createdTime.desc())
-            select(table.fetch(LIST))
-        }.fetchPage(pageIndex, pageSize)
-    }
-
-    companion object {
-        val LIST = newFetcher(User::class).by {
-            allScalarFields()
-            password(false)
+            select(table.fetch(UserFetchers.LIST_ITEM))
         }
     }
 }

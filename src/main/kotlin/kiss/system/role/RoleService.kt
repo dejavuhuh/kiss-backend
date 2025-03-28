@@ -3,16 +3,15 @@ package kiss.system.role
 import kiss.system.role.dto.RoleInput
 import kiss.system.role.dto.RoleSpecification
 import kiss.system.user.User
-import kiss.system.user.UserService
+import kiss.system.user.UserFetchers
 import kiss.system.user.createdTime
 import kiss.system.user.dto.UserSpecification
 import kiss.system.user.roles
-import org.babyfish.jimmer.Page
 import org.babyfish.jimmer.client.FetchBy
+import org.babyfish.jimmer.client.meta.DefaultFetcherOwner
 import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.babyfish.jimmer.sql.kt.ast.expression.desc
 import org.babyfish.jimmer.sql.kt.ast.expression.eq
-import org.babyfish.jimmer.sql.kt.fetcher.newFetcher
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
@@ -22,6 +21,7 @@ import org.springframework.web.bind.annotation.*
 @Transactional
 @RestController
 @RequestMapping("/roles")
+@DefaultFetcherOwner(RoleFetchers::class)
 class RoleService(val sql: KSqlClient) {
 
     /**
@@ -31,29 +31,34 @@ class RoleService(val sql: KSqlClient) {
      * @return 角色列表
      */
     @GetMapping
-    fun list(specification: RoleSpecification): List<@FetchBy("LIST") Role> {
+    fun list(specification: RoleSpecification): List<@FetchBy("LIST_ITEM") Role> {
         return sql.executeQuery(Role::class) {
             where(specification)
             orderBy(table.id)
-            select(table.fetch(LIST))
+            select(table.fetch(RoleFetchers.LIST_ITEM))
+        }
+    }
+
+    @GetMapping("/options")
+    fun options(): List<@FetchBy("SIMPLE") Role> {
+        return sql.executeQuery(Role::class) {
+            select(table.fetch(RoleFetchers.SIMPLE))
         }
     }
 
     @GetMapping("/{id}/users")
     fun users(
         @PathVariable id: Int,
-        @RequestParam pageIndex: Int,
-        @RequestParam pageSize: Int,
-        @ModelAttribute specification: UserSpecification,
-    ): Page<@FetchBy(value = "LIST", ownerType = UserService::class) User> {
-        return sql.createQuery(User::class) {
+        specification: UserSpecification
+    ): List<@FetchBy(value = "LIST_ITEM", ownerType = UserFetchers::class) User> {
+        return sql.executeQuery(User::class) {
             where(specification)
             where(table.roles {
                 this.id.eq(id)
             })
             orderBy(table.createdTime.desc())
-            select(table.fetch(UserService.Companion.LIST))
-        }.fetchPage(pageIndex, pageSize)
+            select(table.fetch(UserFetchers.LIST_ITEM))
+        }
     }
 
     /**
@@ -92,14 +97,5 @@ class RoleService(val sql: KSqlClient) {
     @DeleteMapping
     fun deleteBatch(@RequestParam ids: List<Int>) {
         sql.deleteByIds(Role::class, ids)
-    }
-
-    companion object {
-        val LIST = newFetcher(Role::class).by {
-            allScalarFields()
-            creator {
-                username()
-            }
-        }
     }
 }

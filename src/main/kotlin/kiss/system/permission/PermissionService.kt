@@ -2,20 +2,20 @@ package kiss.system.permission
 
 import kiss.system.permission.dto.PermissionInput
 import kiss.system.role.Role
-import kiss.system.role.by
-import kiss.system.role.id
+import kiss.system.role.RoleFetchers
 import kiss.system.role.permissions
 import org.babyfish.jimmer.client.FetchBy
+import org.babyfish.jimmer.client.meta.DefaultFetcherOwner
 import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.babyfish.jimmer.sql.kt.ast.expression.eq
 import org.babyfish.jimmer.sql.kt.ast.expression.isNull
-import org.babyfish.jimmer.sql.kt.fetcher.newFetcher
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
 @Transactional
 @RestController
 @RequestMapping("/permissions")
+@DefaultFetcherOwner(PermissionFetchers::class)
 class PermissionService(val sql: KSqlClient) {
 
     @PostMapping
@@ -24,20 +24,20 @@ class PermissionService(val sql: KSqlClient) {
     }
 
     @GetMapping
-    fun list(): List<@FetchBy("LIST") Permission> {
+    fun list(): List<@FetchBy("LIST_ITEM") Permission> {
         return sql.executeQuery(Permission::class) {
             where(table.parentId.isNull())
-            select(table.fetch(LIST))
+            select(table.fetch(PermissionFetchers.LIST_ITEM))
         }
     }
 
     @GetMapping("/{id}/roles")
-    fun roles(@PathVariable id: Int): List<@FetchBy("PERMISSION_ROLE") Role> {
+    fun roles(@PathVariable id: Int): List<@FetchBy("SIMPLE", ownerType = RoleFetchers::class) Role> {
         return sql.executeQuery(Role::class) {
             where(table.permissions {
                 this.id eq id
             })
-            select(table.fetch(PERMISSION_ROLE))
+            select(table.fetch(RoleFetchers.SIMPLE))
         }
     }
 
@@ -52,23 +52,5 @@ class PermissionService(val sql: KSqlClient) {
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: Int) {
         sql.deleteById(Permission::class, id)
-    }
-
-    companion object {
-        val LIST = newFetcher(Permission::class).by {
-            allScalarFields()
-            parentId()
-            roles({
-                filter {
-                    orderBy(table.id)
-                }
-            }) {
-                name()
-            }
-            `children*`()
-        }
-        val PERMISSION_ROLE = newFetcher(Role::class).by {
-            name()
-        }
     }
 }

@@ -6,8 +6,7 @@ fun withTestUser(block: () -> Unit) {
     CurrentUserIdHolder.set(1)
     try {
         block()
-    }
-    finally {
+    } finally {
         CurrentUserIdHolder.remove()
     }
 }

@@ -2,6 +2,7 @@ package kiss.authentication
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.slf4j.MDC
 import org.springframework.web.servlet.HandlerInterceptor
 
 class AuthenticationException(message: String) : Exception(message)
@@ -30,12 +31,10 @@ class AuthenticationInterceptor(val sessionRepository: SessionRepository) : Hand
         }
 
         val token = authorization.substring(7)
-        val userId = sessionRepository.get(token)
-        if (userId == null) {
-            throw AuthenticationException("Token is invalid")
-        }
+        val (id, userId) = sessionRepository.get(token) ?: throw AuthenticationException("Token is invalid")
 
         CurrentUserIdHolder.set(userId)
+        MDC.put("sessionId", id.toString())
 
         return true
     }
@@ -47,5 +46,6 @@ class AuthenticationInterceptor(val sessionRepository: SessionRepository) : Hand
         ex: Exception?
     ) {
         CurrentUserIdHolder.remove()
+        MDC.remove("sessionId")
     }
 }

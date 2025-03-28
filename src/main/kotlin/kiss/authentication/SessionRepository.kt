@@ -1,5 +1,6 @@
 package kiss.authentication
 
+import org.babyfish.jimmer.sql.ast.tuple.Tuple2
 import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.babyfish.jimmer.sql.kt.ast.expression.eq
 import org.babyfish.jimmer.sql.kt.ast.expression.gt
@@ -11,11 +12,11 @@ import kotlin.time.toJavaDuration
 @Component
 class SessionRepository(val sql: KSqlClient) {
 
-    fun get(token: String): Int? {
+    fun get(token: String): Tuple2<Int, Int>? {
         return sql.createQuery(Session::class) {
             where(table.token eq token)
             where(table.expiredTime gt Instant.now())
-            select(table.userId)
+            select(table.id, table.userId)
         }.fetchOneOrNull()
     }
 
