@@ -28,6 +28,8 @@ class SessionRepository(val sql: KSqlClient) {
     }
 
     fun delete(token: String) {
-        sql.deleteById(Session::class, token)
+        sql.executeDelete(Session::class) {
+            where(table.token eq token)
+        }
     }
 }

@@ -15,10 +15,13 @@ CREATE TABLE IF NOT EXISTS "user"
 
 CREATE TABLE IF NOT EXISTS session
 (
-    token        text PRIMARY KEY,
+    id           integer GENERATED ALWAYS AS IDENTITY,
+    token        text        NOT NULL,
     user_id      integer     NOT NULL,
     created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
     expired_time timestamptz NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (token),
     FOREIGN KEY (user_id) REFERENCES "user"
 );
 
