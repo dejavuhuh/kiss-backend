@@ -9,7 +9,7 @@ class AuthenticationException(message: String) : Exception(message)
 
 class AuthenticationInterceptor(val sessionRepository: SessionRepository) : HandlerInterceptor {
 
-    val whiteList = listOf("/sign-in", "/sign-up", "/ts.zip")
+    val whiteList = listOf("/sign-in", "/sign-up", "/ts.zip", "/favicon.ico")
 
     override fun preHandle(
         request: HttpServletRequest,

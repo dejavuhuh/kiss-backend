@@ -14,7 +14,6 @@ jimmer:
       mutable: true
   mutation-transaction-required: true
   database-validation-mode: error
-  show-sql: true
 spring:
   quartz:
     job-store-type: jdbc
@@ -28,3 +27,10 @@ spring:
       continue-on-error: true
 server:
   port: 9000
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  server:
+    port: 9001
