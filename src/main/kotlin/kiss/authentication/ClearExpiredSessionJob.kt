@@ -9,16 +9,29 @@ import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
 @JobDescription(
-    title = "清理3个月之前的过期会话",
+    title = "清理过期会话",
     cron = "0 0 3 * * ?" // 每天凌晨3点执行
 )
 @Component
 class ClearExpiredSessionJob(val sql: KSqlClient) : Job {
 
     override fun execute(context: JobExecutionContext) {
-        sql.executeDelete(Session::class) {
-            where(table.createdTime le LocalDateTime.now().minusMonths(1))
+        val sessions = sql.executeQuery(Session::class) {
             where(table.expiredTime le LocalDateTime.now())
+            select(table.fetchBy {
+                user()
+            })
         }
+
+        val histories = sessions.map {
+            SessionHistory {
+                id = it.id
+                user = it.user
+                reason = HistoryReason.EXPIRED
+            }
+        }
+
+        sql.insertEntities(histories)
+        sql.deleteByIds(Session::class, sessions.map { it.id })
     }
 }

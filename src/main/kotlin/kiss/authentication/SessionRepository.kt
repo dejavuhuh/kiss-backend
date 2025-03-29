@@ -27,10 +27,4 @@ class SessionRepository(val sql: KSqlClient) {
             this.expiredTime = LocalDateTime.now().plus(expiration.toJavaDuration())
         })
     }
-
-    fun delete(token: String) {
-        sql.executeDelete(Session::class) {
-            where(table.token eq token)
-        }
-    }
 }

@@ -25,6 +25,16 @@ CREATE TABLE IF NOT EXISTS session
     FOREIGN KEY (user_id) REFERENCES "user"
 );
 
+CREATE TABLE IF NOT EXISTS session_history
+(
+    id           integer     NOT NULL,
+    user_id      integer     NOT NULL,
+    reason       text        NOT NULL,
+    created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES "user"
+);
+
 CREATE TABLE IF NOT EXISTS role
 (
     id           integer GENERATED ALWAYS AS IDENTITY,

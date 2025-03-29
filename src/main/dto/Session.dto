@@ -1,0 +1,10 @@
+export kiss.authentication.Session
+
+specification SessionSpecification {
+    id
+    flat(user) {
+        username
+    }
+    ge(createdTime)
+    le(createdTime)
+}
