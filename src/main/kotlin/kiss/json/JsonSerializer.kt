@@ -1,12 +1,11 @@
 package kiss.json
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import java.lang.reflect.Type
 
 object JsonSerializer {
 
-    private val objectMapper = ObjectMapper().registerKotlinModule()
+    private val objectMapper = ObjectMapper().findAndRegisterModules()
 
     fun serialize(obj: Any?): String {
         return objectMapper.writeValueAsString(obj)

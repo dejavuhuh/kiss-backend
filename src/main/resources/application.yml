@@ -34,3 +34,6 @@ management:
         include: '*'
   server:
     port: 9001
+logging:
+  level:
+    kiss.trace: debug
