@@ -5,7 +5,7 @@ import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.babyfish.jimmer.sql.kt.ast.expression.eq
 import org.babyfish.jimmer.sql.kt.ast.expression.gt
 import org.springframework.stereotype.Component
-import java.time.Instant
+import java.time.LocalDateTime
 import kotlin.time.Duration
 import kotlin.time.toJavaDuration
 
@@ -15,7 +15,7 @@ class SessionRepository(val sql: KSqlClient) {
     fun get(token: String): Tuple2<Int, Int>? {
         return sql.createQuery(Session::class) {
             where(table.token eq token)
-            where(table.expiredTime gt Instant.now())
+            where(table.expiredTime gt LocalDateTime.now())
             select(table.id, table.userId)
         }.fetchOneOrNull()
     }
@@ -24,7 +24,7 @@ class SessionRepository(val sql: KSqlClient) {
         sql.insert(Session {
             this.token = token
             this.userId = userId
-            this.expiredTime = Instant.now().plus(expiration.toJavaDuration())
+            this.expiredTime = LocalDateTime.now().plus(expiration.toJavaDuration())
         })
     }
 

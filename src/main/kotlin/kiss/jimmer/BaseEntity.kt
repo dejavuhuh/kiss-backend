@@ -4,7 +4,7 @@ import org.babyfish.jimmer.sql.GeneratedValue
 import org.babyfish.jimmer.sql.GenerationType
 import org.babyfish.jimmer.sql.Id
 import org.babyfish.jimmer.sql.MappedSuperclass
-import java.time.Instant
+import java.time.LocalDateTime
 
 @MappedSuperclass
 interface BaseEntity {
@@ -19,5 +19,5 @@ interface BaseEntity {
     /**
      * 创建时间
      */
-    val createdTime: Instant
+    val createdTime: LocalDateTime
 }
