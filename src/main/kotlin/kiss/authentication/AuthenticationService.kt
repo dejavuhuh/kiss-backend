@@ -60,7 +60,7 @@ class AuthenticationService(
 
     @PostMapping("/sign-out")
     fun signOut(request: HttpServletRequest) {
-        val token = request.getHeader("Authorization")
+        val token = request.getHeader("Authorization").substring(7)
         val (id, userId) = sessionRepository.get(token) ?: return
 
         sql.insert(SessionHistory {
