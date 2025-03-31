@@ -17,6 +17,8 @@ jimmer:
   show-sql: true
   pretty-sql: true
   inline-sql-variables: true
+  executor-context-prefixes:
+    - kiss.system
 spring:
   quartz:
     job-store-type: jdbc

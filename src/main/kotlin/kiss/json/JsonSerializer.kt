@@ -7,7 +7,10 @@ object JsonSerializer {
 
     private val objectMapper = ObjectMapper().findAndRegisterModules()
 
-    fun serialize(obj: Any?): String {
+    fun serialize(obj: Any?, pretty: Boolean = false): String {
+        if (pretty) {
+            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj)
+        }
         return objectMapper.writeValueAsString(obj)
     }
 
