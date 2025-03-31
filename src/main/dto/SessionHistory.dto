@@ -1,0 +1,11 @@
+export kiss.authentication.SessionHistory
+
+specification SessionHistory {
+    id
+    reason
+    flat(user) {
+        username
+    }
+    ge(createdTime)
+    le(createdTime)
+}

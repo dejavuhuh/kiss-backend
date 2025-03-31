@@ -42,4 +42,3 @@ management:
 logging:
   level:
     kiss.trace: debug
-    org.babyfish.jimmer.sql.runtime: warn
