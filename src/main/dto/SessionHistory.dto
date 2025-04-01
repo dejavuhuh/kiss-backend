@@ -1,6 +1,6 @@
 export kiss.authentication.SessionHistory
 
-specification SessionHistory {
+specification SessionHistorySpecification {
     id
     reason
     flat(user) {
