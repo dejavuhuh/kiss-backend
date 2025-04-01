@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/kiss
+    username: kiss
+    password: kiss
+  data:
+    redis:
+      host: redis
+      port: 6379
