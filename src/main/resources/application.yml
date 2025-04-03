@@ -20,6 +20,8 @@ jimmer:
   executor-context-prefixes:
     - kiss.system
 spring:
+  application:
+    name: kiss
   quartz:
     job-store-type: jdbc
     jdbc:

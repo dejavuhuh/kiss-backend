@@ -1,12 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-    <property name="CONSOLE_LOG_PATTERN"
-              value="%clr(%d{M月dd日 HH:mm:ss}){faint}|%clr(%-5(%level))|%clr(%mdc{sessionId}){yellow}|%clr(%mdc{traceId}){magenta}|%clr(%-40.40logger{39}){cyan}|%m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+    <property name="CONSOLE_LOG_PATTERN" value="%clr(%d{M月dd日 HH:mm:ss}){faint}|%clr(%-5(%level))|%clr(%mdc{sessionId}){yellow}|%clr(%mdc{traceId}){magenta}|%clr(%-40.40logger{39}){cyan}|%m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+    <property name="FILE_LOG_PATTERN" value="%d{M月dd日 HH:mm:ss}|%-5(%level)|%mdc{sessionId}|%mdc{traceId}|%-40.40logger{39}|%m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+
     <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
     <include resource="org/springframework/boot/logging/logback/file-appender.xml"/>
+
+    <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
+        <http>
+            <url>http://localhost:3100/loki/api/v1/push</url>
+        </http>
+        <format>
+            <label>
+                <pattern>
+                    service_name=kiss
+                </pattern>
+                <structuredMetadataPattern>
+                    sessionId=%X{sessionId:-NONE},
+                    traceID=%X{traceId:-NONE}
+                </structuredMetadataPattern>
+            </label>
+            <message>
+                <pattern>${FILE_LOG_PATTERN}</pattern>
+            </message>
+            <sortByTime>true</sortByTime>
+        </format>
+    </appender>
+
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
+        <appender-ref ref="LOKI"/>
     </root>
 </configuration>
