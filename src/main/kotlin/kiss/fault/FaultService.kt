@@ -40,4 +40,12 @@ class FaultService {
             sqrt(Math.random())
         }
     }
+
+    /**
+     * 服务端异常
+     */
+    @GetMapping("/server-error")
+    fun serverError() {
+        throw RuntimeException("服务端异常")
+    }
 }
