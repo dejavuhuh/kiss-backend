@@ -42,3 +42,5 @@ management:
 logging:
   level:
     kiss.trace: debug
+  file:
+    name: ${user.home}/logs/kiss.log
