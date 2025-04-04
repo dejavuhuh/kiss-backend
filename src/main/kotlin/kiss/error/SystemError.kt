@@ -2,19 +2,18 @@ package kiss.error
 
 import kiss.jimmer.BaseEntity
 import kiss.jimmer.Creator
-import org.babyfish.jimmer.sql.Entity
 import org.babyfish.jimmer.sql.Serialized
 
-@Entity
+//@Entity
 interface SystemError : BaseEntity, Creator {
 
     val request: HttpRequest
 
     val traceId: String
 
-    val screenshotS3Key: String
+    val screenshot: List<String>
 
-    val description: String?
+    val description: String
 }
 
 @Serialized

@@ -33,16 +33,20 @@ spring:
       mode: always
       continue-on-error: true
 server:
-  port: 9000
+  port: 8000
 management:
   endpoints:
     web:
       exposure:
         include: '*'
   server:
-    port: 9001
+    port: 8001
 logging:
   level:
     kiss.trace: debug
   file:
     name: ${user.home}/logs/kiss.log
+minio:
+  endpoint: http://localhost:9000
+  access-key: kiss
+  secret-key: kisskiss

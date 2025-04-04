@@ -4,6 +4,7 @@ networks:
 services:
   postgres:
     image: 'postgres:latest'
+    container_name: postgres
     environment:
       - 'POSTGRES_DB=kiss'
       - 'POSTGRES_PASSWORD=kiss'
@@ -12,17 +13,20 @@ services:
       - '5432:5432'
   redis:
     image: 'redis:latest'
+    container_name: redis
     ports:
       - '6379'
   # loki
   loki:
     image: grafana/loki:latest
+    container_name: loki
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
     networks:
       - loki
   grafana:
+    container_name: grafana
     environment:
       - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
       - GF_AUTH_ANONYMOUS_ENABLED=true
@@ -38,7 +42,7 @@ services:
         datasources:
         - name: Loki
           type: loki
-          access: proxy 
+          access: proxy
           orgId: 1
           url: http://loki:3100
           basicAuth: false
@@ -52,3 +56,13 @@ services:
       - "3000:3000"
     networks:
       - loki
+  # minio
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    ports:
+      - "9000:9000"
+    environment:
+      - MINIO_ROOT_USER=kiss
+      - MINIO_ROOT_PASSWORD=kisskiss
+    command: server /data
