@@ -1,5 +1,6 @@
 package kiss.authentication
 
+import kiss.jimmer.insertOnly
 import org.babyfish.jimmer.spring.SqlClients
 import org.babyfish.jimmer.sql.ast.tuple.Tuple2
 import org.babyfish.jimmer.sql.kt.ast.expression.eq
@@ -27,7 +28,7 @@ class SessionRepository(ctx: ApplicationContext) {
     }
 
     fun set(token: String, userId: Int, expiration: Duration) {
-        sql.insert(Session {
+        sql.insertOnly(Session {
             this.token = token
             this.userId = userId
             this.expiredTime = LocalDateTime.now().plus(expiration.toJavaDuration())

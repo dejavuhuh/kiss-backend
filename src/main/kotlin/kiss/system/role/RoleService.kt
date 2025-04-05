@@ -1,5 +1,7 @@
 package kiss.system.role
 
+import kiss.jimmer.insertOnly
+import kiss.jimmer.updateOnly
 import kiss.system.role.dto.RoleInput
 import kiss.system.role.dto.RoleSpecification
 import kiss.system.user.User
@@ -66,7 +68,7 @@ class RoleService(val sql: KSqlClient) {
      */
     @PostMapping
     fun create(@RequestBody input: RoleInput) {
-        sql.insert(input)
+        sql.insertOnly(input)
     }
 
     /**
@@ -76,7 +78,7 @@ class RoleService(val sql: KSqlClient) {
      */
     @PutMapping("/{id}")
     fun update(@PathVariable id: Int, @RequestBody input: RoleInput) {
-        sql.update(input.toEntity { this.id = id })
+        sql.updateOnly(input.toEntity { this.id = id })
     }
 
     /**

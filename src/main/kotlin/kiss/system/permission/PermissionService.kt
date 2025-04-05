@@ -1,5 +1,6 @@
 package kiss.system.permission
 
+import kiss.jimmer.insertOnly
 import kiss.system.permission.dto.PermissionInput
 import kiss.system.role.Role
 import kiss.system.role.RoleFetchers
@@ -20,7 +21,7 @@ class PermissionService(val sql: KSqlClient) {
 
     @PostMapping
     fun create(@RequestBody input: PermissionInput) {
-        sql.insert(input)
+        sql.insertOnly(input)
     }
 
     @GetMapping
@@ -43,7 +44,7 @@ class PermissionService(val sql: KSqlClient) {
 
     @PostMapping("/{id}/bindRoles")
     fun bindRoles(@PathVariable id: Int, @RequestBody roleIds: List<Int>) {
-        sql.save(Permission {
+        sql.entities.save(Permission {
             this.id = id
             this.roleIds = roleIds
         })

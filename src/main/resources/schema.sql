@@ -77,3 +77,16 @@ CREATE TABLE IF NOT EXISTS user_role_mapping
     FOREIGN KEY (user_id) REFERENCES "user",
     FOREIGN KEY (role_id) REFERENCES role
 );
+
+CREATE TABLE IF NOT EXISTS issue
+(
+    id           integer GENERATED ALWAYS AS IDENTITY,
+    title        text        NOT NULL,
+    description  text        NOT NULL,
+    trace_id     text        NOT NULL,
+    request      jsonb       NOT NULL,
+    creator_id   integer     NOT NULL,
+    created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (creator_id) REFERENCES "user"
+);

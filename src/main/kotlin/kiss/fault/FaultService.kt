@@ -1,9 +1,6 @@
 package kiss.fault
 
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.math.sqrt
@@ -44,8 +41,15 @@ class FaultService {
     /**
      * 服务端异常
      */
-    @GetMapping("/server-error")
-    fun serverError() {
+    @Suppress("unused")
+    @PostMapping("/server-error")
+    fun serverError(
+        @RequestParam foo: String,
+        @RequestParam bar: Int,
+        @RequestBody body: ServerErrorBody
+    ) {
         throw RuntimeException("服务端异常")
     }
+
+    data class ServerErrorBody(val foo: String, val bar: Int)
 }

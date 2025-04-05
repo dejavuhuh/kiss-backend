@@ -1,6 +1,7 @@
 package kiss.authentication
 
 import kiss.authentication.dto.SessionSpecification
+import kiss.jimmer.insertOnly
 import org.babyfish.jimmer.client.FetchBy
 import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.babyfish.jimmer.sql.kt.ast.expression.desc
@@ -30,7 +31,7 @@ class SessionService(val sql: KSqlClient) {
             select(table.id, table.userId)
         }.fetchOne()
 
-        sql.insert(SessionHistory {
+        sql.insertOnly(SessionHistory {
             this.id = id
             this.userId = userId
             this.reason = HistoryReason.KICK_OUT

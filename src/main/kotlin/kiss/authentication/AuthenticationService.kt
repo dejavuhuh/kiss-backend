@@ -1,6 +1,7 @@
 package kiss.authentication
 
 import jakarta.servlet.http.HttpServletRequest
+import kiss.jimmer.insertOnly
 import kiss.system.role.Role
 import kiss.system.role.by
 import kiss.system.role.users
@@ -52,7 +53,7 @@ class AuthenticationService(
 
     @PostMapping("/sign-up")
     fun signUp(@RequestBody request: SignInRequest) {
-        sql.insert(User {
+        sql.insertOnly(User {
             username = request.username
             password = BCrypt.hashpw(request.password, BCrypt.gensalt())
         })
@@ -63,7 +64,7 @@ class AuthenticationService(
         val token = request.getHeader("Authorization").substring(7)
         val (id, userId) = sessionRepository.get(token) ?: return
 
-        sql.insert(SessionHistory {
+        sql.insertOnly(SessionHistory {
             this.id = id
             this.userId = userId
             this.reason = HistoryReason.SIGN_OUT
