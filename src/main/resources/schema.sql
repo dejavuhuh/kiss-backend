@@ -80,15 +80,18 @@ CREATE TABLE IF NOT EXISTS user_role_mapping
 
 CREATE TABLE IF NOT EXISTS issue
 (
-    id           integer GENERATED ALWAYS AS IDENTITY,
-    title        text        NOT NULL,
-    description  text        NOT NULL,
-    trace_id     text        NOT NULL,
-    request      jsonb       NOT NULL,
-    creator_id   integer     NOT NULL,
-    created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    id            integer GENERATED ALWAYS AS IDENTITY,
+    title         text        NOT NULL,
+    description   text        NOT NULL,
+    trace_id      text        NOT NULL,
+    request       jsonb       NOT NULL,
+    state         text        NOT NULL,
+    related_to_id integer     NULL,
+    creator_id    integer     NOT NULL,
+    created_time  timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
-    FOREIGN KEY (creator_id) REFERENCES "user"
+    FOREIGN KEY (creator_id) REFERENCES "user",
+    FOREIGN KEY (related_to_id) REFERENCES issue
 );
 
 CREATE TABLE IF NOT EXISTS migration_history

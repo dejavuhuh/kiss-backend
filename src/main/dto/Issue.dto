@@ -2,12 +2,14 @@ export kiss.issue.Issue
 
 input IssueInput {
     #allScalars(this)
+    -state
 }
 
 specification IssueSpecification {
     like/i(title)
     like/i(description)
     eq(traceId)
+    eq(id)
     ge(createdTime)
     le(createdTime)
     associatedIdEq(creator)

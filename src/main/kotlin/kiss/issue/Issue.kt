@@ -2,8 +2,7 @@ package kiss.issue
 
 import kiss.jimmer.BaseEntity
 import kiss.jimmer.Creator
-import org.babyfish.jimmer.sql.Entity
-import org.babyfish.jimmer.sql.Serialized
+import org.babyfish.jimmer.sql.*
 
 @Entity
 interface Issue : BaseEntity, Creator {
@@ -15,6 +14,20 @@ interface Issue : BaseEntity, Creator {
     val title: String
 
     val description: String
+
+    @Default("OPEN")
+    val state: IssueState
+
+    @ManyToOne
+    val relatedTo: Issue?
+
+    @OneToMany(mappedBy = "relatedTo")
+    val relatedFrom: List<Issue>
+}
+
+enum class IssueState {
+    OPEN,
+    CLOSED,
 }
 
 @Serialized
