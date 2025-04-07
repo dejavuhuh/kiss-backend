@@ -62,6 +62,14 @@ class IssueService(val sql: KSqlClient) {
         })
     }
 
+    @DeleteMapping("/{id}/unRelate")
+    fun unRelate(@PathVariable id: Int) {
+        sql.updateOnly(Issue {
+            this.id = id
+            this.relatedToId = null
+        })
+    }
+
     companion object {
         val LIST_ITEM = newFetcher(Issue::class).by {
             title()
