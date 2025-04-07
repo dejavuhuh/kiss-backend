@@ -90,3 +90,12 @@ CREATE TABLE IF NOT EXISTS issue
     PRIMARY KEY (id),
     FOREIGN KEY (creator_id) REFERENCES "user"
 );
+
+CREATE TABLE IF NOT EXISTS migration_history
+(
+    id           integer GENERATED ALWAYS AS IDENTITY,
+    version      integer     NOT NULL,
+    created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE (version)
+)
