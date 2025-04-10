@@ -23,22 +23,28 @@ class V1Executor(val sql: KSqlClient) : MigrationExecutor {
                 children()
                     .addBy {
                         type = PermissionType.PAGE
-                        code = "user"
+                        code = "system:user"
                         name = "用户管理"
                     }
                     .addBy {
                         type = PermissionType.PAGE
-                        code = "role"
+                        code = "system:role"
                         name = "角色管理"
+                        children()
+                            .addBy {
+                                type = PermissionType.BUTTON
+                                code = "system:role:create"
+                                name = "创建角色"
+                            }
                     }
                     .addBy {
                         type = PermissionType.PAGE
-                        code = "permission"
+                        code = "system:permission"
                         name = "权限管理"
                     }
                     .addBy {
                         type = PermissionType.PAGE
-                        code = "job"
+                        code = "system:job"
                         name = "定时任务"
                     }
             },
@@ -49,12 +55,12 @@ class V1Executor(val sql: KSqlClient) : MigrationExecutor {
                 children()
                     .addBy {
                         type = PermissionType.PAGE
-                        code = "session"
+                        code = "trace:session"
                         name = "会话管理"
                     }
                     .addBy {
                         type = PermissionType.PAGE
-                        code = "issue"
+                        code = "trace:issue"
                         name = "问题反馈"
                     }
             }

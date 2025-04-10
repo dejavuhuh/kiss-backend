@@ -7,6 +7,9 @@ class UserFetchers {
         val LIST_ITEM = newFetcher(User::class).by {
             allScalarFields()
             password(false)
+            roles {
+                name()
+            }
         }
     }
 }

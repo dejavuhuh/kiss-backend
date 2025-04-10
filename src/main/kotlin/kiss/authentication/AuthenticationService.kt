@@ -2,9 +2,6 @@ package kiss.authentication
 
 import jakarta.servlet.http.HttpServletRequest
 import kiss.jimmer.insertOnly
-import kiss.system.role.Role
-import kiss.system.role.by
-import kiss.system.role.users
 import kiss.system.user.*
 import kiss.web.BusinessException
 import org.babyfish.jimmer.client.FetchBy
@@ -78,22 +75,15 @@ class AuthenticationService(
         return sql.findOneById(CURRENT_USER, CurrentUserIdHolder.get())
     }
 
-    @GetMapping("/current-user/roles")
-    fun getCurrentUserRoles(): List<@FetchBy("CURRENT_USER_ROLE") Role> {
-        return sql.executeQuery(Role::class) {
-            where(table.users {
-                id eq CurrentUserIdHolder.get()
-            })
-            select(table.fetch(CURRENT_USER_ROLE))
-        }
-    }
-
     companion object {
         val CURRENT_USER = newFetcher(User::class).by {
             username()
-        }
-        val CURRENT_USER_ROLE = newFetcher(Role::class).by {
-            name()
+            roles {
+                name()
+                permissions {
+                    code()
+                }
+            }
         }
     }
 }

@@ -14,7 +14,6 @@ interface Permission : BaseEntity {
 
     val name: String
 
-    @Key
     @ManyToOne
     val parent: Permission?
 

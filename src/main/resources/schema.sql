@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS permission
     name         text        NOT NULL,
     created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
-    UNIQUE NULLS NOT DISTINCT (parent_id, code),
+    UNIQUE (code),
     FOREIGN KEY (parent_id) REFERENCES permission
 );
 

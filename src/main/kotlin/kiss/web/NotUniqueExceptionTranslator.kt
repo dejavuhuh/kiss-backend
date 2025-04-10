@@ -14,7 +14,7 @@ class NotUniqueExceptionTranslator : ExceptionTranslator<SaveException.NotUnique
         return when {
             ex.isMatched(RoleProps.NAME) -> BusinessException("角色名称已存在")
             ex.isMatched(UserProps.USERNAME) -> BusinessException("用户名已存在")
-            ex.isMatched(PermissionProps.PARENT, PermissionProps.CODE) -> BusinessException("权限编码已存在")
+            ex.isMatched(PermissionProps.CODE) -> BusinessException("权限编码已存在")
             else -> null
         }
     }

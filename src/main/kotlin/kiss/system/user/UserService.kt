@@ -5,10 +5,10 @@ import org.babyfish.jimmer.client.FetchBy
 import org.babyfish.jimmer.client.meta.DefaultFetcherOwner
 import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.babyfish.jimmer.sql.kt.ast.expression.desc
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.bind.annotation.*
 
+@Transactional
 @RestController
 @RequestMapping("/users")
 @DefaultFetcherOwner(UserFetchers::class)
@@ -21,5 +21,13 @@ class UserService(val sql: KSqlClient) {
             orderBy(table.createdTime.desc())
             select(table.fetch(UserFetchers.LIST_ITEM))
         }
+    }
+
+    @PutMapping("/{id}/assignRoles")
+    fun assignRoles(@PathVariable id: Int, @RequestBody roleIds: List<Int>) {
+        sql.entities.save(User {
+            this.id = id
+            this.roleIds = roleIds
+        })
     }
 }
