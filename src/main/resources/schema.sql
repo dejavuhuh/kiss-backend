@@ -101,4 +101,16 @@ CREATE TABLE IF NOT EXISTS migration_history
     created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     UNIQUE (version)
-)
+);
+
+CREATE TABLE IF NOT EXISTS config
+(
+    id           integer GENERATED ALWAYS AS IDENTITY,
+    name         text        NOT NULL,
+    yaml         text        NULL,
+    creator_id   integer     NOT NULL,
+    created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE (name),
+    FOREIGN KEY (creator_id) REFERENCES "user"
+);

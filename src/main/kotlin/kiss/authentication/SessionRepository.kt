@@ -15,8 +15,10 @@ import kotlin.time.toJavaDuration
 @Component
 class SessionRepository(ctx: ApplicationContext) {
 
-    val sql = SqlClients.kotlin(ctx) {
-        setExecutor(DefaultExecutor.INSTANCE)
+    val sql by lazy {
+        SqlClients.kotlin(ctx) {
+            setExecutor(DefaultExecutor.INSTANCE)
+        }
     }
 
     fun get(token: String): Tuple2<Int, Int>? {

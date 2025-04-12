@@ -1,0 +1,6 @@
+export kiss.system.config.Config
+
+input ConfigInput {
+    #allScalars(this)
+    -yaml
+}
