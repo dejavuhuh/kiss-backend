@@ -1,5 +1,6 @@
 package kiss.web
 
+import kiss.system.config.ConfigProps
 import kiss.system.permission.PermissionProps
 import kiss.system.role.RoleProps
 import kiss.system.user.UserProps
@@ -15,6 +16,7 @@ class NotUniqueExceptionTranslator : ExceptionTranslator<SaveException.NotUnique
             ex.isMatched(RoleProps.NAME) -> BusinessException("角色名称已存在")
             ex.isMatched(UserProps.USERNAME) -> BusinessException("用户名已存在")
             ex.isMatched(PermissionProps.CODE) -> BusinessException("权限编码已存在")
+            ex.isMatched(ConfigProps.NAME) -> BusinessException("配置名称已存在")
             else -> null
         }
     }

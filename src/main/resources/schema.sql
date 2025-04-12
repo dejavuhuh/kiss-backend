@@ -108,9 +108,23 @@ CREATE TABLE IF NOT EXISTS config
     id           integer GENERATED ALWAYS AS IDENTITY,
     name         text        NOT NULL,
     yaml         text        NULL,
+    version      integer     NOT NULL,
     creator_id   integer     NOT NULL,
     created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     UNIQUE (name),
+    FOREIGN KEY (creator_id) REFERENCES "user"
+);
+
+CREATE TABLE IF NOT EXISTS config_history
+(
+    id           integer GENERATED ALWAYS AS IDENTITY,
+    config_id    integer     NOT NULL,
+    yaml         text        NULL,
+    reason       text        NOT NULL,
+    creator_id   integer     NOT NULL,
+    created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (config_id) REFERENCES config,
     FOREIGN KEY (creator_id) REFERENCES "user"
 );
