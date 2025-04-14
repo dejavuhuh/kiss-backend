@@ -3,6 +3,7 @@ package kiss.feishu
 import com.fasterxml.jackson.annotation.JsonGetter
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.github.benmanes.caffeine.cache.Caffeine
+import kiss.json.JsonSerializer
 import kiss.okhttp.json
 import kiss.system.config.ConfigCenter
 import kiss.system.config.readYamlAsObject
@@ -22,6 +23,50 @@ class FeishuApi(val configCenter: ConfigCenter) {
         .expireAfterWrite(Duration.ofSeconds(7100))
         .maximumSize(1)
         .build<String, String>()
+
+    /**
+     * 发送卡片消息到群聊
+     */
+    fun sendCardMessageToChat(
+        chatId: String,
+        templateId: String,
+        templateVariables: Map<String, Any>,
+        uuid: String,
+    ) {
+        val tenantAccessToken = getTenantAccessToken()
+
+        data class RequestBody(
+            @get:JsonGetter("receive_id")
+            val receiveId: String,
+            @get:JsonGetter("msg_type")
+            val msgType: String,
+            val content: String,
+            val uuid: String,
+        )
+
+        val content = mapOf(
+            "type" to "template",
+            "data" to mapOf(
+                "template_id" to templateId,
+                "template_variable" to templateVariables
+            )
+        )
+
+        val request = Request.Builder()
+            .url("${baseUrl}/im/v1/messages?receive_id_type=chat_id")
+            .header("Authorization", "Bearer $tenantAccessToken")
+            .json(
+                RequestBody(
+                    receiveId = chatId,
+                    msgType = "interactive",
+                    content = JsonSerializer.serialize(content),
+                    uuid = uuid,
+                )
+            )
+            .build()
+
+        client.execute<Unit>(request)
+    }
 
     fun createChat(): String {
         val tenantAccessToken = getTenantAccessToken()
