@@ -6,15 +6,16 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import kiss.okhttp.json
 import kiss.system.config.ConfigCenter
 import kiss.system.config.readYamlAsObject
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.springframework.stereotype.Component
 import java.time.Duration
 
 @Component
 class FeishuApi(val configCenter: ConfigCenter) {
-    val client = OkHttpClient()
+
+    val client = FeishuHttpClient()
     val baseUrl = "https://open.feishu.cn/open-apis"
+
     private val tenantAccessTokenCache = Caffeine
         .newBuilder()
         // nearly 2 hours
@@ -25,7 +26,7 @@ class FeishuApi(val configCenter: ConfigCenter) {
     fun createChat(): String {
         val tenantAccessToken = getTenantAccessToken()
 
-        data class Body(
+        data class RequestBody(
             val name: String,
             @get:JsonGetter("user_id_list")
             val userIdList: List<String>,
@@ -37,7 +38,7 @@ class FeishuApi(val configCenter: ConfigCenter) {
             .url("${baseUrl}/im/v1/chats")
             .header("Authorization", "Bearer $tenantAccessToken")
             .json(
-                Body(
+                RequestBody(
                     name = "测试群聊 123",
                     userIdList = listOf("123"),
                     userIdType = "open_id",
@@ -45,17 +46,13 @@ class FeishuApi(val configCenter: ConfigCenter) {
             )
             .build()
 
-        data class Data(
+        data class ResponseData(
             @JsonProperty("chat_id")
             val chatId: String,
         )
 
-        val response = client.newCall(request).json<Response<Data>>()
-        if (response.code != OK) {
-            throw FeishuApiException(response.code, response.msg)
-        }
-
-        return response.data.chatId
+        val responseData = client.execute<ResponseData>(request)
+        return responseData.chatId
     }
 
     private fun getTenantAccessToken() = tenantAccessTokenCache.get("tenantAccessToken") {
@@ -65,12 +62,12 @@ class FeishuApi(val configCenter: ConfigCenter) {
     private fun loadTenantAccessToken(): String {
         val config = getConfig()
 
-        data class Body(
+        data class RequestBody(
             @get:JsonGetter("app_id") val appId: String,
             @get:JsonGetter("app_secret") val appSecret: String
         )
 
-        data class Response(
+        data class ResponseBody(
             val code: Long,
             val msg: String,
             @JsonProperty("tenant_access_token")
@@ -80,15 +77,15 @@ class FeishuApi(val configCenter: ConfigCenter) {
 
         val request = Request.Builder()
             .url("${baseUrl}/auth/v3/tenant_access_token/internal")
-            .json(Body(config.appId, config.appSecret))
+            .json(RequestBody(config.appId, config.appSecret))
             .build()
 
-        val response = client.newCall(request).json<Response>()
-        if (response.code != OK) {
-            throw FeishuApiException(response.code, response.msg)
+        val responseBody = client.executeRaw<ResponseBody>(request)
+        if (responseBody.code != OK) {
+            throw FeishuApiException(responseBody.code, responseBody.msg)
         }
 
-        return response.tenantAccessToken
+        return responseBody.tenantAccessToken
     }
 
     private fun getConfig() = configCenter.readYamlAsObject<FeishuConfig>("feishu")
@@ -97,14 +94,4 @@ class FeishuApi(val configCenter: ConfigCenter) {
 data class FeishuConfig(
     val appId: String,
     val appSecret: String,
-)
-
-const val OK = 0L
-
-class FeishuApiException(code: Long, msg: String) : Exception("[${code}] $msg")
-
-data class Response<T>(
-    val code: Long,
-    val msg: String,
-    val data: T,
 )
