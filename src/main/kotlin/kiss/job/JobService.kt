@@ -3,6 +3,7 @@ package kiss.job
 import jakarta.annotation.PostConstruct
 import org.quartz.*
 import org.quartz.impl.matchers.GroupMatcher
+import org.springframework.aop.framework.AopProxyUtils
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -21,15 +22,18 @@ class JobService(
     @PostConstruct
     fun initializeJobs() {
         for (job in jobs) {
-            val jobDescription = job::class.java.getAnnotation(JobDescription::class.java)
+            @Suppress("UNCHECKED_CAST")
+            val jobClass = AopProxyUtils.ultimateTargetClass(job) as Class<out Job>
+            val jobDescription = jobClass.getAnnotation(JobDescription::class.java)
+                ?: throw IllegalStateException("Job must be annotated with @JobDescription")
             val jobDetail = JobBuilder
-                .newJob(job::class.java)
-                .withIdentity(job::class.simpleName)
+                .newJob(jobClass)
+                .withIdentity(jobClass.simpleName)
                 .withDescription(jobDescription.title)
                 .build()
             val trigger = TriggerBuilder
                 .newTrigger()
-                .withIdentity(job::class.simpleName)
+                .withIdentity(jobClass.simpleName)
                 .startNow()
                 .withSchedule(
                     CronScheduleBuilder.cronScheduleNonvalidatedExpression(jobDescription.cron)
@@ -47,8 +51,9 @@ class JobService(
                 val jobDetail = scheduler.getJobDetail(it)
                 val trigger = scheduler
                     .getTriggersOfJob(it)
-                    .first { it is CronTrigger }
-                JobView(jobDetail, trigger as CronTrigger)
+                    .filterIsInstance<CronTrigger>()
+                    .first()
+                JobView(jobDetail, trigger)
             }
     }
 

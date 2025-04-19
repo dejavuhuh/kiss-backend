@@ -1,6 +1,5 @@
 package kiss.system.role
 
-import kiss.jimmer.insertOnly
 import kiss.jimmer.updateOnly
 import kiss.system.role.dto.RoleInput
 import kiss.system.role.dto.RoleSpecification
@@ -11,6 +10,7 @@ import kiss.system.user.dto.UserSpecification
 import kiss.system.user.roles
 import org.babyfish.jimmer.client.FetchBy
 import org.babyfish.jimmer.client.meta.DefaultFetcherOwner
+import org.babyfish.jimmer.sql.ast.mutation.SaveMode
 import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.babyfish.jimmer.sql.kt.ast.expression.desc
 import org.babyfish.jimmer.sql.kt.ast.expression.eq
@@ -67,9 +67,7 @@ class RoleService(val sql: KSqlClient) {
      * 创建角色
      */
     @PostMapping
-    fun create(@RequestBody input: RoleInput) {
-        sql.insertOnly(input)
-    }
+    fun create(@RequestBody input: RoleInput) = sql.save(input, SaveMode.INSERT_ONLY).modifiedEntity
 
     /**
      * 更新角色

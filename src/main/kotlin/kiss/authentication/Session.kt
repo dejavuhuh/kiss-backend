@@ -5,7 +5,7 @@ import kiss.system.user.User
 import org.babyfish.jimmer.sql.Entity
 import org.babyfish.jimmer.sql.Key
 import org.babyfish.jimmer.sql.OneToOne
-import java.time.LocalDateTime
+import java.time.Instant
 
 @Entity
 interface Session : BaseEntity {
@@ -16,5 +16,5 @@ interface Session : BaseEntity {
     @OneToOne
     val user: User
 
-    val expiredTime: LocalDateTime
+    val expiredTime: Instant
 }
