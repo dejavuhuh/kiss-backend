@@ -19,7 +19,7 @@ private val log = KotlinLogging.logger {}
 @Order(Ordered.HIGHEST_PRECEDENCE)
 class TracingFilter(val sessionRepository: SessionRepository) : OncePerRequestFilter() {
 
-    val whiteList = listOf("/sign-in", "/sign-up", "/ts.zip", "/favicon.ico")
+    val whiteList = listOf("/sign-in", "/sign-up", "/ts.zip", "/favicon.ico", "/feishu/authorize")
 
     override fun doFilterInternal(
         request: HttpServletRequest,

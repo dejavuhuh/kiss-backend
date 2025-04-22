@@ -68,36 +68,42 @@ class FeishuApi(val configCenter: ConfigCenter) {
         client.execute<Unit>(request)
     }
 
-    fun createChat(): String {
-        val tenantAccessToken = getTenantAccessToken()
+    /**
+     * 获取 user_access_token
+     */
+    fun getUserAccessToken(
+        code: String,
+        redirectUri: String,
+    ) {
+        val config = getConfig()
 
         data class RequestBody(
-            val name: String,
-            @get:JsonGetter("user_id_list")
-            val userIdList: List<String>,
-            @get:JsonGetter("user_id_type")
-            val userIdType: String,
+            val grant_type: String = "authorization_code",
+            val client_id: String,
+            val client_secret: String,
+            val code: String,
+            val redirect_uri: String,
         )
 
         val request = Request.Builder()
-            .url("${baseUrl}/im/v1/chats")
-            .header("Authorization", "Bearer $tenantAccessToken")
+            .url("${baseUrl}/authen/v2/oauth/token")
             .json(
                 RequestBody(
-                    name = "测试群聊 123",
-                    userIdList = listOf("123"),
-                    userIdType = "open_id",
+                    client_id = config.appId,
+                    client_secret = config.appSecret,
+                    code = code,
+                    redirect_uri = redirectUri,
                 )
             )
             .build()
 
-        data class ResponseData(
-            @JsonProperty("chat_id")
-            val chatId: String,
+        data class ResponseBody(
+            val code: String,
+            val access_token: String,
         )
 
-        val responseData = client.execute<ResponseData>(request)
-        return responseData.chatId
+        val response = client.executeRaw<ResponseBody>(request)
+        println()
     }
 
     private fun getTenantAccessToken() = tenantAccessTokenCache.get("tenantAccessToken") {
