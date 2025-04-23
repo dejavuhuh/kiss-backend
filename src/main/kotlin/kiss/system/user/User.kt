@@ -8,10 +8,11 @@ import org.babyfish.jimmer.sql.*
 @Table(name = "\"user\"")
 interface User : BaseEntity {
 
-    @Key
-    val username: String
+    val displayName: String
 
-    val password: String
+    @Key
+    @OneToOne(mappedBy = "user")
+    val account: Account?
 
     @ManyToMany
     val roles: List<Role>

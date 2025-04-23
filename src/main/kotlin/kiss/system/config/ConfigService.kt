@@ -70,21 +70,21 @@ class ConfigService(val sql: KSqlClient) {
             allScalarFields()
             yaml(false)
             creator {
-                username()
+                displayName()
             }
         }
 
         val HISTORY_LIST_ITEM = newFetcher(ConfigHistory::class).by {
             allScalarFields()
             creator {
-                username()
+                displayName()
             }
         }
 
         val DETAIL = newFetcher(Config::class).by {
             allScalarFields()
             creator {
-                username()
+                displayName()
             }
         }
     }

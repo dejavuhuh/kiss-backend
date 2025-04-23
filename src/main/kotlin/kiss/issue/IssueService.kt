@@ -75,13 +75,13 @@ class IssueService(val sql: KSqlClient) {
             title()
             createdTime()
             creator {
-                username()
+                displayName()
             }
         }
         val GET = newFetcher(Issue::class).by {
             allScalarFields()
             creator {
-                username()
+                displayName()
             }
             relatedTo()
             relatedFrom()
@@ -89,7 +89,7 @@ class IssueService(val sql: KSqlClient) {
         val RELATABLE = newFetcher(Issue::class).by {
             title()
             creator {
-                username()
+                displayName()
             }
         }
     }

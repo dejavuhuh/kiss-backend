@@ -45,7 +45,7 @@ class SessionService(val sql: KSqlClient) {
             allScalarFields()
             token(false)
             user {
-                username()
+                displayName()
             }
         }
     }

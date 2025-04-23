@@ -6,11 +6,21 @@
 CREATE TABLE IF NOT EXISTS "user"
 (
     id           integer GENERATED ALWAYS AS IDENTITY,
+    display_name text        NOT NULL,
+    created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS account
+(
+    id           integer GENERATED ALWAYS AS IDENTITY,
+    user_id      integer     NOT NULL,
     username     text        NOT NULL,
     password     text        NOT NULL,
     created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
-    UNIQUE (username)
+    UNIQUE (username),
+    FOREIGN KEY (user_id) REFERENCES "user"
 );
 
 CREATE TABLE IF NOT EXISTS session

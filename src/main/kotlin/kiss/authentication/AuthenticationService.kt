@@ -1,10 +1,11 @@
 package kiss.authentication
 
 import jakarta.servlet.http.HttpServletRequest
-import kiss.jimmer.insertOnly
 import kiss.system.user.*
 import kiss.web.BusinessException
 import org.babyfish.jimmer.client.FetchBy
+import org.babyfish.jimmer.sql.ast.mutation.AssociatedSaveMode
+import org.babyfish.jimmer.sql.ast.mutation.SaveMode
 import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.babyfish.jimmer.sql.kt.ast.expression.eq
 import org.babyfish.jimmer.sql.kt.fetcher.newFetcher
@@ -33,9 +34,9 @@ class AuthenticationService(
 
     @PostMapping("/sign-in")
     fun signIn(@RequestBody request: SignInRequest): String {
-        val (id, password) = sql.createQuery(User::class) {
+        val (userId, password) = sql.createQuery(Account::class) {
             where(table.username eq request.username)
-            select(table.id, table.password)
+            select(table.userId, table.password)
         }.fetchOneOrNull() ?: throw BusinessException("用户名或密码错误")
 
         if (!BCrypt.checkpw(request.password, password)) {
@@ -43,17 +44,20 @@ class AuthenticationService(
         }
 
         val token = UUID.randomUUID().toString()
-        sessionRepository.set(token, id, sessionExpiration)
+        sessionRepository.set(token, userId, sessionExpiration)
 
         return token
     }
 
     @PostMapping("/sign-up")
     fun signUp(@RequestBody request: SignInRequest) {
-        sql.insertOnly(User {
+        sql.save(Account {
             username = request.username
             password = BCrypt.hashpw(request.password, BCrypt.gensalt())
-        })
+            user {
+                displayName = request.username
+            }
+        }, SaveMode.INSERT_ONLY, AssociatedSaveMode.APPEND)
     }
 
     @PostMapping("/sign-out")
@@ -61,11 +65,13 @@ class AuthenticationService(
         val token = request.getHeader("Authorization").substring(7)
         val (id, userId) = sessionRepository.get(token) ?: return
 
-        sql.insertOnly(SessionHistory {
+        sql.save(SessionHistory {
             this.id = id
             this.userId = userId
             this.reason = HistoryReason.SIGN_OUT
-        })
+        }) {
+            setMode(SaveMode.INSERT_ONLY)
+        }
 
         sql.deleteById(Session::class, id)
     }
@@ -77,7 +83,6 @@ class AuthenticationService(
 
     companion object {
         val CURRENT_USER = newFetcher(User::class).by {
-            username()
             roles {
                 name()
                 permissions {

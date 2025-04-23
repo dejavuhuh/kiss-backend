@@ -6,7 +6,6 @@ class UserFetchers {
     companion object {
         val LIST_ITEM = newFetcher(User::class).by {
             allScalarFields()
-            password(false)
             roles {
                 name()
             }

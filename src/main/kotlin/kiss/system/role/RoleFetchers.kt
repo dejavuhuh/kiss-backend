@@ -10,7 +10,7 @@ class RoleFetchers {
         val LIST_ITEM = newFetcher(Role::class).by {
             allScalarFields()
             creator {
-                username()
+                displayName()
             }
         }
     }

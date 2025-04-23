@@ -31,7 +31,7 @@ class SessionHistoryService(val sql: KSqlClient) {
         val LIST_ITEM = newFetcher(SessionHistory::class).by {
             allScalarFields()
             user {
-                username()
+                displayName()
             }
         }
     }

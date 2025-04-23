@@ -1,7 +1,7 @@
 export kiss.system.user.User
 
 specification UserSpecification {
-    like/i(username)
+    like/i(displayName)
     ge(createdTime)
     le(createdTime)
 }

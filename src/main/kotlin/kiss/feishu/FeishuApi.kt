@@ -3,6 +3,9 @@ package kiss.feishu
 import com.fasterxml.jackson.annotation.JsonGetter
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.github.benmanes.caffeine.cache.Caffeine
+import com.lark.oapi.Client
+import com.lark.oapi.core.request.RequestOptions
+import com.lark.oapi.service.authen.v1.model.GetUserInfoRespBody
 import kiss.json.JsonSerializer
 import kiss.okhttp.json
 import kiss.system.config.ConfigCenter
@@ -68,13 +71,29 @@ class FeishuApi(val configCenter: ConfigCenter) {
         client.execute<Unit>(request)
     }
 
+    fun getUserInfo(accessToken: String): GetUserInfoRespBody {
+        val (appId, appSecret) = getConfig()
+        val sdkClient = Client.newBuilder(appId, appSecret).build()
+        val response = sdkClient.authen().v1().userInfo().get(
+            RequestOptions.newBuilder()
+                .userAccessToken(accessToken)
+                .build()
+        )
+
+        if (!response.success()) {
+            throw FeishuApiException(response)
+        }
+
+        return response.data
+    }
+
     /**
      * 获取 user_access_token
      */
     fun getUserAccessToken(
         code: String,
         redirectUri: String,
-    ) {
+    ): String {
         val config = getConfig()
 
         data class RequestBody(
@@ -98,12 +117,19 @@ class FeishuApi(val configCenter: ConfigCenter) {
             .build()
 
         data class ResponseBody(
-            val code: String,
+            val code: Long,
             val access_token: String,
+            val expires_in: Long,
+            val error: String?,
+            val error_description: String?,
         )
 
         val response = client.executeRaw<ResponseBody>(request)
-        println()
+        if (response.code != OK) {
+            throw FeishuAccessTokenException(response.code, response.error, response.error_description)
+        }
+
+        return response.access_token
     }
 
     private fun getTenantAccessToken() = tenantAccessTokenCache.get("tenantAccessToken") {
@@ -133,7 +159,7 @@ class FeishuApi(val configCenter: ConfigCenter) {
 
         val responseBody = client.executeRaw<ResponseBody>(request)
         if (responseBody.code != OK) {
-            throw FeishuApiException(responseBody.code, responseBody.msg)
+            throw FeishuApiHttpException(responseBody.code, responseBody.msg)
         }
 
         return responseBody.tenantAccessToken
