@@ -1,0 +1,6 @@
+export kiss.application.PermissionApplication
+
+input PermissionApplicationInput {
+    #allScalars(this)
+    id(permissions) as permissionIds
+}

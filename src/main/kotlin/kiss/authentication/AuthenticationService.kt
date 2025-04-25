@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
-import kotlin.time.Duration.Companion.days
 
 @Transactional
 @RestController
@@ -24,8 +22,6 @@ class AuthenticationService(
     val sql: KSqlClient,
     val sessionRepository: SessionRepository,
 ) {
-
-    val sessionExpiration = 7.days
 
     data class SignInRequest(
         val username: String,
@@ -43,10 +39,7 @@ class AuthenticationService(
             throw BusinessException("用户名或密码错误")
         }
 
-        val token = UUID.randomUUID().toString()
-        sessionRepository.set(token, userId, sessionExpiration)
-
-        return token
+        return sessionRepository.create(userId)
     }
 
     @PostMapping("/sign-up")
@@ -79,6 +72,11 @@ class AuthenticationService(
     @GetMapping("/current-user")
     fun getCurrentUser(): @FetchBy("CURRENT_USER") User {
         return sql.findOneById(CURRENT_USER, CurrentUserIdHolder.get())
+    }
+
+    @PostMapping("/apply-for-permissions")
+    fun applyForPermissions() {
+        // Do nothing
     }
 
     companion object {

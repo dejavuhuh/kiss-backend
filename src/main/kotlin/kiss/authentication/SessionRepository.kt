@@ -8,9 +8,9 @@ import org.babyfish.jimmer.sql.kt.ast.expression.gt
 import org.babyfish.jimmer.sql.runtime.DefaultExecutor
 import org.springframework.context.ApplicationContext
 import org.springframework.stereotype.Component
+import java.time.Duration
 import java.time.Instant
-import kotlin.time.Duration
-import kotlin.time.toJavaDuration
+import java.util.*
 
 @Component
 class SessionRepository(ctx: ApplicationContext) {
@@ -29,11 +29,13 @@ class SessionRepository(ctx: ApplicationContext) {
         }.fetchOneOrNull()
     }
 
-    fun set(token: String, userId: Int, expiration: Duration) {
+    fun create(userId: Int): String {
+        val token = UUID.randomUUID().toString()
         sql.insertOnly(Session {
             this.token = token
             this.userId = userId
-            this.expiredTime = Instant.now().plus(expiration.toJavaDuration())
+            this.expiredTime = Instant.now().plus(Duration.ofDays(7))
         })
+        return token
     }
 }

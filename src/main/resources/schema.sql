@@ -11,6 +11,14 @@ CREATE TABLE IF NOT EXISTS "user"
     PRIMARY KEY (id)
 );
 
+CREATE TABLE IF NOT EXISTS feishu_user
+(
+    id      text    NOT NULL,
+    user_id integer NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES "user"
+);
+
 CREATE TABLE IF NOT EXISTS account
 (
     id           integer GENERATED ALWAYS AS IDENTITY,
@@ -137,4 +145,23 @@ CREATE TABLE IF NOT EXISTS config_history
     PRIMARY KEY (id),
     FOREIGN KEY (config_id) REFERENCES config,
     FOREIGN KEY (creator_id) REFERENCES "user"
+);
+
+CREATE TABLE IF NOT EXISTS permission_application
+(
+    id           integer GENERATED ALWAYS AS IDENTITY,
+    reason       text        NOT NULL,
+    creator_id   integer     NOT NULL,
+    created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (creator_id) REFERENCES "user"
+);
+
+CREATE TABLE IF NOT EXISTS permission_application_permission_mapping
+(
+    permission_application_id integer NOT NULL,
+    permission_id             integer NOT NULL,
+    PRIMARY KEY (permission_application_id, permission_id),
+    FOREIGN KEY (permission_application_id) REFERENCES permission_application,
+    FOREIGN KEY (permission_id) REFERENCES permission
 );
