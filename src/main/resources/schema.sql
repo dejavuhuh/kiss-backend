@@ -165,3 +165,22 @@ CREATE TABLE IF NOT EXISTS permission_application_permission_mapping
     FOREIGN KEY (permission_application_id) REFERENCES permission_application,
     FOREIGN KEY (permission_id) REFERENCES permission
 );
+
+CREATE TABLE IF NOT EXISTS subscription_plan
+(
+    id            integer GENERATED ALWAYS AS IDENTITY,
+    name          text        NOT NULL,
+    billing_cycle text        NOT NULL,
+    price         numeric     NOT NULL,
+    created_time  timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE (name)
+);
+
+CREATE TABLE IF NOT EXISTS "order"
+(
+    id           integer GENERATED ALWAYS AS IDENTITY,
+    status       text        NOT NULL,
+    created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+);

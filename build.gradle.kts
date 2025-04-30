@@ -37,6 +37,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("io.minio:minio:8.5.17")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.alipay.sdk:alipay-sdk-java:4.40.186.ALL")
 
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     runtimeOnly("org.postgresql:postgresql")
