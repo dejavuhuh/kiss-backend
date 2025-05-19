@@ -28,6 +28,9 @@ interface Permission : BaseEntity {
 
     @IdView("roles")
     val roleIds: List<Int>
+
+    @OneToMany(mappedBy = "permission")
+    val auditLogs: List<PermissionAuditLog>
 }
 
 enum class PermissionType {

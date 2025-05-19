@@ -1,12 +1,12 @@
 package kiss.system.permission
 
-import kiss.jimmer.insertOnly
 import kiss.system.permission.dto.PermissionInput
 import kiss.system.role.Role
 import kiss.system.role.RoleFetchers
 import kiss.system.role.permissions
 import org.babyfish.jimmer.client.FetchBy
 import org.babyfish.jimmer.client.meta.DefaultFetcherOwner
+import org.babyfish.jimmer.sql.ast.mutation.SaveMode
 import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.babyfish.jimmer.sql.kt.ast.expression.eq
 import org.babyfish.jimmer.sql.kt.ast.expression.isNull
@@ -21,7 +21,23 @@ class PermissionService(val sql: KSqlClient) {
 
     @PostMapping
     fun create(@RequestBody input: PermissionInput) {
-        sql.insertOnly(input)
+        sql.save(input, SaveMode.INSERT_ONLY)
+    }
+
+    @PutMapping("/{id}")
+    fun update(@PathVariable id: Int, @RequestBody input: PermissionInput) {
+        val oldEntity = sql.findOneById(PermissionInput.METADATA.fetcher, id)
+        val newEntity = input.toEntity { this.id = id }
+
+        sql.save(newEntity, SaveMode.UPDATE_ONLY)
+
+
+        // audit log
+        sql.save(PermissionAuditLog {
+            this.permissionId = id
+            this.operation = Operation.UPDATE
+            // this.operationDetails = UpdateDetails(input)
+        }, SaveMode.INSERT_ONLY)
     }
 
     @GetMapping
@@ -44,10 +60,17 @@ class PermissionService(val sql: KSqlClient) {
 
     @PostMapping("/{id}/bindRoles")
     fun bindRoles(@PathVariable id: Int, @RequestBody roleIds: List<Int>) {
-        sql.entities.save(Permission {
+        sql.save(Permission {
             this.id = id
             this.roleIds = roleIds
         })
+
+        // audit log
+        sql.save(PermissionAuditLog {
+            this.permissionId = id
+            this.operation = Operation.BIND_ROLES
+            this.operationDetails = BindRolesDetails(roleIds)
+        }, SaveMode.INSERT_ONLY)
     }
 
     @DeleteMapping("/{id}")
