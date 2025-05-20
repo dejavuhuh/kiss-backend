@@ -89,5 +89,11 @@ class PermissionService(val sql: KSqlClient) {
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: Int) {
         sql.deleteById(Permission::class, id)
+
+        // audit log
+        sql.save(PermissionAuditLog {
+            this.permissionId = id
+            this.operation = Operation.DELETE
+        }, SaveMode.INSERT_ONLY)
     }
 }

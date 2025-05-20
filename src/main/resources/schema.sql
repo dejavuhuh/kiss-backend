@@ -1,21 +1,21 @@
--- DROP TABLE IF EXISTS "order";
--- DROP TABLE IF EXISTS subscription_plan;
--- DROP TABLE IF EXISTS permission_application_permission_mapping;
--- DROP TABLE IF EXISTS permission_application;
--- DROP TABLE IF EXISTS config_history;
--- DROP TABLE IF EXISTS config;
--- DROP TABLE IF EXISTS migration_history;
--- DROP TABLE IF EXISTS issue;
--- DROP TABLE IF EXISTS user_role_mapping;
--- DROP TABLE IF EXISTS role_permission_mapping;
--- DROP TABLE IF EXISTS permission_audit_log;
--- DROP TABLE IF EXISTS permission;
--- DROP TABLE IF EXISTS role;
--- DROP TABLE IF EXISTS session_history;
--- DROP TABLE IF EXISTS session;
--- DROP TABLE IF EXISTS account;
--- DROP TABLE IF EXISTS feishu_user;
--- DROP TABLE IF EXISTS "user";
+DROP TABLE IF EXISTS "order";
+DROP TABLE IF EXISTS subscription_plan;
+DROP TABLE IF EXISTS permission_application_permission_mapping;
+DROP TABLE IF EXISTS permission_application;
+DROP TABLE IF EXISTS config_history;
+DROP TABLE IF EXISTS config;
+DROP TABLE IF EXISTS migration_history;
+DROP TABLE IF EXISTS issue;
+DROP TABLE IF EXISTS user_role_mapping;
+DROP TABLE IF EXISTS role_permission_mapping;
+DROP TABLE IF EXISTS permission_audit_log;
+DROP TABLE IF EXISTS permission;
+DROP TABLE IF EXISTS role;
+DROP TABLE IF EXISTS session_history;
+DROP TABLE IF EXISTS session;
+DROP TABLE IF EXISTS account;
+DROP TABLE IF EXISTS feishu_user;
+DROP TABLE IF EXISTS "user";
 
 CREATE TABLE IF NOT EXISTS "user"
 (
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS permission
 CREATE TABLE IF NOT EXISTS permission_audit_log
 (
     id                integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    permission_id     integer     NOT NULL REFERENCES permission ON DELETE CASCADE,
+    permission_id     integer     NOT NULL,
     operation         text        NOT NULL,
     operation_details jsonb       NULL,
     operator_id       integer     NOT NULL REFERENCES "user",
