@@ -1,20 +1,21 @@
-DROP TABLE IF EXISTS "order";
-DROP TABLE IF EXISTS subscription_plan;
-DROP TABLE IF EXISTS permission_application_permission_mapping;
-DROP TABLE IF EXISTS permission_application;
-DROP TABLE IF EXISTS config_history;
-DROP TABLE IF EXISTS config;
-DROP TABLE IF EXISTS migration_history;
-DROP TABLE IF EXISTS issue;
-DROP TABLE IF EXISTS user_role_mapping;
-DROP TABLE IF EXISTS role_permission_mapping;
-DROP TABLE IF EXISTS permission;
-DROP TABLE IF EXISTS role;
-DROP TABLE IF EXISTS session_history;
-DROP TABLE IF EXISTS session;
-DROP TABLE IF EXISTS account;
-DROP TABLE IF EXISTS feishu_user;
-DROP TABLE IF EXISTS "user";
+-- DROP TABLE IF EXISTS "order";
+-- DROP TABLE IF EXISTS subscription_plan;
+-- DROP TABLE IF EXISTS permission_application_permission_mapping;
+-- DROP TABLE IF EXISTS permission_application;
+-- DROP TABLE IF EXISTS config_history;
+-- DROP TABLE IF EXISTS config;
+-- DROP TABLE IF EXISTS migration_history;
+-- DROP TABLE IF EXISTS issue;
+-- DROP TABLE IF EXISTS user_role_mapping;
+-- DROP TABLE IF EXISTS role_permission_mapping;
+-- DROP TABLE IF EXISTS permission_audit_log;
+-- DROP TABLE IF EXISTS permission;
+-- DROP TABLE IF EXISTS role;
+-- DROP TABLE IF EXISTS session_history;
+-- DROP TABLE IF EXISTS session;
+-- DROP TABLE IF EXISTS account;
+-- DROP TABLE IF EXISTS feishu_user;
+-- DROP TABLE IF EXISTS "user";
 
 CREATE TABLE IF NOT EXISTS "user"
 (

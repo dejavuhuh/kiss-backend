@@ -1,5 +1,6 @@
 package kiss.system.permission
 
+import kiss.jimmer.Immutables
 import kiss.system.permission.dto.PermissionInput
 import kiss.system.role.Role
 import kiss.system.role.RoleFetchers
@@ -26,17 +27,22 @@ class PermissionService(val sql: KSqlClient) {
 
     @PutMapping("/{id}")
     fun update(@PathVariable id: Int, @RequestBody input: PermissionInput) {
-        val oldEntity = sql.findOneById(PermissionInput.METADATA.fetcher, id)
-        val newEntity = input.toEntity { this.id = id }
+        // check if the input is different from the old one
+        val oldShape = sql.findOneById(PermissionInput.METADATA.fetcher, id)
+        val newShape = input.toEntity { this.id = id }
+        if (Immutables.equals(oldShape, newShape)) {
+            return
+        }
 
-        sql.save(newEntity, SaveMode.UPDATE_ONLY)
-
+        // do save
+        sql.save(newShape, SaveMode.UPDATE_ONLY)
 
         // audit log
+        val diff = Immutables.diff(oldShape, newShape)
         sql.save(PermissionAuditLog {
             this.permissionId = id
             this.operation = Operation.UPDATE
-            // this.operationDetails = UpdateDetails(input)
+            this.operationDetails = UpdateDetails(diff)
         }, SaveMode.INSERT_ONLY)
     }
 
