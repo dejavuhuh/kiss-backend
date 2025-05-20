@@ -19,6 +19,7 @@ jimmer:
   inline-sql-variables: true
   executor-context-prefixes:
     - kiss.system
+  default-dissociation-action-checkable: false
 spring:
   application:
     name: kiss

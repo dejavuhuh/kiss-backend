@@ -22,23 +22,30 @@ class PermissionService(val sql: KSqlClient) {
 
     @PostMapping
     fun create(@RequestBody input: PermissionInput) {
-        sql.save(input, SaveMode.INSERT_ONLY)
+        val savedEntity = sql.save(input, SaveMode.INSERT_ONLY).modifiedEntity
+
+        // audit log
+        sql.save(PermissionAuditLog {
+            this.permissionId = savedEntity.id
+            this.operation = Operation.CREATE
+            this.operationDetails = CreateDetails(input)
+        }, SaveMode.INSERT_ONLY)
     }
 
     @PutMapping("/{id}")
     fun update(@PathVariable id: Int, @RequestBody input: PermissionInput) {
         // check if the input is different from the old one
-        val oldShape = sql.findOneById(PermissionInput.METADATA.fetcher, id)
-        val newShape = input.toEntity { this.id = id }
-        if (Immutables.equals(oldShape, newShape)) {
+        val oldEntity = sql.findOneById(PermissionInput.METADATA.fetcher, id)
+        val newEntity = input.toEntity { this.id = id }
+        if (Immutables.equals(oldEntity, newEntity)) {
             return
         }
 
         // do save
-        sql.save(newShape, SaveMode.UPDATE_ONLY)
+        sql.save(newEntity, SaveMode.UPDATE_ONLY)
 
         // audit log
-        val diff = Immutables.diff(oldShape, newShape)
+        val diff = Immutables.diff(oldEntity, newEntity)
         sql.save(PermissionAuditLog {
             this.permissionId = id
             this.operation = Operation.UPDATE
