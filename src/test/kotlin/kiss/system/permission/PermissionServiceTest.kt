@@ -1,45 +1,46 @@
 package kiss.system.permission
 
-import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotest.matchers.shouldBe
 import kiss.TestcontainersConfiguration
-import kiss.system.role.Role
-import kiss.withTestUser
-import org.babyfish.jimmer.sql.kt.KSqlClient
+import kiss.junit.MockUser
+import kiss.junit.MockUserExtension
+import kiss.system.permission.dto.PermissionInput
+import org.babyfish.jimmer.kt.isLoaded
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
+import org.springframework.test.context.jdbc.Sql
 import org.springframework.transaction.annotation.Transactional
 
 @Transactional
 @SpringBootTest
+@Sql(statements = ["INSERT INTO \"user\" (display_name) VALUES ('TEST_USER');"])
+@ExtendWith(MockUserExtension::class)
 @Import(TestcontainersConfiguration::class)
-class PermissionServiceTest @Autowired constructor(
-    val sql: KSqlClient,
-    val permissionService: PermissionService,
-) {
+class PermissionServiceTest @Autowired constructor(val permissionService: PermissionService) {
 
     @Test
-    fun `List roles of specific permission`() = withTestUser {
-        // Prepare data
-        val p1 = Permission {
-            parentId = null
-            type = PermissionType.DIRECTORY
-            code = "p_code"
-            name = "p_name"
-        }
-        val r1 = Role { name = "r_name_1"; permissions().addBy(p1) }
-        val r2 = Role { name = "r_name_2" }
-        val permissionId = sql
-            .insertEntities(listOf(r1, r2))
-            .items[0]
-            .modifiedEntity
-            .permissions[0]
-            .id
+    @MockUser(1)
+    fun `Should create new permission when input is valid`() {
+        val stubPermissionType = PermissionType.DIRECTORY
+        val stubPermissionCode = "stubPermissionCode"
+        val stubPermissionName = "stubPermissionName"
+        val stubPermissionParentId = null
 
-        // Test
-        permissionService.roles(permissionId)
-            .map { it.name }
-            .shouldContainExactlyInAnyOrder(r1.name)
+        val createdPermission = permissionService.create(
+            PermissionInput(
+                type = stubPermissionType,
+                code = stubPermissionCode,
+                name = stubPermissionName,
+                parentId = stubPermissionParentId,
+            )
+        )
+
+        createdPermission.type shouldBe stubPermissionType
+        createdPermission.code shouldBe stubPermissionCode
+        createdPermission.name shouldBe stubPermissionName
+        isLoaded(createdPermission, Permission::id) shouldBe true
     }
 }

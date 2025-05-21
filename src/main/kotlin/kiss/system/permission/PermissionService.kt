@@ -11,6 +11,7 @@ import org.babyfish.jimmer.sql.ast.mutation.SaveMode
 import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.babyfish.jimmer.sql.kt.ast.expression.eq
 import org.babyfish.jimmer.sql.kt.ast.expression.isNull
+import org.springframework.http.HttpStatus
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
@@ -21,7 +22,8 @@ import org.springframework.web.bind.annotation.*
 class PermissionService(val sql: KSqlClient) {
 
     @PostMapping
-    fun create(@RequestBody input: PermissionInput) {
+    @ResponseStatus(HttpStatus.CREATED)
+    fun create(@RequestBody input: PermissionInput): Permission {
         val savedEntity = sql.save(input, SaveMode.INSERT_ONLY).modifiedEntity
 
         // audit log
@@ -30,6 +32,8 @@ class PermissionService(val sql: KSqlClient) {
             this.operation = Operation.CREATE
             this.operationDetails = CreateDetails(input)
         }, SaveMode.INSERT_ONLY)
+
+        return savedEntity
     }
 
     @PutMapping("/{id}")
