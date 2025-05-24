@@ -45,12 +45,44 @@ class InitialMigration(val sql: KSqlClient) : Migration {
                     .addBy {
                         type = PermissionType.PAGE
                         code = "system:permission"
-                        name = "权限管理"
+                        name = "页面权限"
+                    }
+                    .addBy {
+                        type = PermissionType.PAGE
+                        code = "system:api"
+                        name = "接口权限"
                     }
                     .addBy {
                         type = PermissionType.PAGE
                         code = "system:job"
                         name = "定时任务"
+                    }
+                    .addBy {
+                        type = PermissionType.PAGE
+                        code = "system:config"
+                        name = "配置中心"
+                    }
+            },
+            Permission {
+                type = PermissionType.DIRECTORY
+                code = "user"
+                name = "用户中心"
+                children()
+                    .addBy {
+                        type = PermissionType.PAGE
+                        code = "user:my-application"
+                        name = "我的申请"
+                    }
+            },
+            Permission {
+                type = PermissionType.DIRECTORY
+                code = "flow"
+                name = "流程管理"
+                children()
+                    .addBy {
+                        type = PermissionType.PAGE
+                        code = "flow:editor"
+                        name = "流程编辑器"
                     }
             },
             Permission {
@@ -68,7 +100,29 @@ class InitialMigration(val sql: KSqlClient) : Migration {
                         code = "trace:issue"
                         name = "问题反馈"
                     }
-            }
+            },
+            Permission {
+                type = PermissionType.PAGE
+                code = "fault"
+                name = "故障演练"
+            },
+            Permission {
+                type = PermissionType.DIRECTORY
+                code = "e-commerce"
+                name = "电商业务"
+                children()
+                    .addBy {
+                        type = PermissionType.DIRECTORY
+                        code = "e-commerce:product"
+                        name = "商品管理"
+                        children()
+                            .addBy {
+                                type = PermissionType.PAGE
+                                code = "e-commerce:product:category"
+                                name = "商品分类"
+                            }
+                    }
+            },
         )
         sql.saveEntities(permissions) {
             setMode(SaveMode.INSERT_ONLY)

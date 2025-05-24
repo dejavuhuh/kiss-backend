@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
 /**
- * 角色服务
+ * 角色管理
  */
 @Transactional
 @RestController
@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.*
 class RoleService(val sql: KSqlClient) {
 
     /**
-     * 列表查询
+     * 查询角色列表
      *
      * @param specification 查询条件
      * @return 角色列表

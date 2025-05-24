@@ -15,6 +15,9 @@ import org.springframework.http.HttpStatus
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
+/**
+ * 权限管理
+ */
 @Transactional
 @RestController
 @RequestMapping("/permissions")
