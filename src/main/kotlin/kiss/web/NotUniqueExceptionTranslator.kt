@@ -1,5 +1,6 @@
 package kiss.web
 
+import kiss.e_commerce.product.ProductCategoryProps
 import kiss.payment.subscription.SubscriptionPlanProps
 import kiss.system.config.ConfigProps
 import kiss.system.permission.PermissionProps
@@ -19,6 +20,15 @@ class NotUniqueExceptionTranslator : ExceptionTranslator<SaveException.NotUnique
             ex.isMatched(PermissionProps.CODE) -> BusinessException("权限编码已存在")
             ex.isMatched(ConfigProps.NAME) -> BusinessException("配置名称已存在")
             ex.isMatched(SubscriptionPlanProps.NAME) -> BusinessException("订阅计划名称已存在")
+            ex.isMatched(ProductCategoryProps.PARENT, ProductCategoryProps.NAME) -> {
+                val parent = ex.getValue(ProductCategoryProps.PARENT)
+                if (parent == null) {
+                    BusinessException("根分类名称已存在")
+                } else {
+                    BusinessException("子分类名称已存在")
+                }
+            }
+
             else -> null
         }
     }
