@@ -13,7 +13,7 @@ jimmer:
       path: /ts.zip
       mutable: true
   mutation-transaction-required: true
-  database-validation-mode: error
+  #  database-validation-mode: error
   show-sql: true
   pretty-sql: true
   inline-sql-variables: true

@@ -5,6 +5,7 @@ import kiss.jimmer.Creator
 import kiss.system.permission.Permission
 import kiss.system.user.User
 import org.babyfish.jimmer.sql.Entity
+import org.babyfish.jimmer.sql.IdView
 import org.babyfish.jimmer.sql.Key
 import org.babyfish.jimmer.sql.ManyToMany
 
@@ -28,6 +29,12 @@ interface Role : BaseEntity, Creator {
     @ManyToMany
     val permissions: List<Permission>
 
+    @IdView("permissions")
+    val permissionIds: List<Int>
+
     @ManyToMany(mappedBy = "roles")
     val users: List<User>
+
+    @IdView("users")
+    val userIds: List<Int>
 }

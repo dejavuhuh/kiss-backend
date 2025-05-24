@@ -22,6 +22,7 @@ class ProductCategoryService(val sql: KSqlClient) {
     fun list(): List<@FetchBy("LIST_ITEM") ProductCategory> {
         return sql.executeQuery(ProductCategory::class) {
             where(table.parentId.isNull())
+            orderBy(table.sortOrder)
             select(table.fetch(LIST_ITEM))
         }
     }
@@ -30,6 +31,7 @@ class ProductCategoryService(val sql: KSqlClient) {
     fun listByParentId(@PathVariable id: Int): List<@FetchBy("LIST_ITEM") ProductCategory> {
         return sql.executeQuery(ProductCategory::class) {
             where(table.parentId eq id)
+            orderBy(table.sortOrder)
             select(table.fetch(LIST_ITEM))
         }
     }

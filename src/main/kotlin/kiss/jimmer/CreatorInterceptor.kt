@@ -9,11 +9,7 @@ import org.springframework.stereotype.Component
 class CreatorInterceptor : DraftInterceptor<Creator, CreatorDraft> {
 
     override fun beforeSave(draft: CreatorDraft, original: Creator?) {
-        if (isLoaded(draft, Creator::creator)) {
-            throw IllegalStateException("不允许手动设置创建人")
-        }
-
-        if (original == null) {
+        if (original == null && !isLoaded(draft, Creator::creator)) {
             val currentUserId = CurrentUserIdHolder.get()
             draft.creatorId = currentUserId
         }

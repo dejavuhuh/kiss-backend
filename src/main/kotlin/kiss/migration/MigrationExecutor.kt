@@ -1,12 +1,32 @@
 package kiss.migration
 
-import org.springframework.core.Ordered
+import kiss.jimmer.insertOnly
+import org.babyfish.jimmer.sql.kt.KSqlClient
+import org.babyfish.jimmer.sql.kt.ast.expression.max
+import org.springframework.boot.ApplicationArguments
+import org.springframework.boot.ApplicationRunner
+import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
-interface MigrationExecutor : Ordered {
+@Component
+@Transactional
+class MigrationExecutor(
+    val executors: List<Migration>,
+    val sql: KSqlClient,
+) : ApplicationRunner {
 
-    val version: Int
+    override fun run(args: ApplicationArguments) {
+        val maxVersion = sql.createQuery(MigrationHistory::class) {
+            select(max(table.version))
+        }.fetchOne() ?: 0
 
-    fun execute()
-
-    override fun getOrder() = version
+        for (executor in executors) {
+            if (executor.version > maxVersion) {
+                executor.execute()
+                sql.insertOnly(MigrationHistory {
+                    version = executor.version
+                })
+            }
+        }
+    }
 }

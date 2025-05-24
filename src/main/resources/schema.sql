@@ -176,3 +176,13 @@ CREATE TABLE IF NOT EXISTS "order"
     status       text        NOT NULL,
     created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS product_category
+(
+    id           integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    parent_id    integer     NULL REFERENCES product_category,
+    name         text        NOT NULL,
+    sort_order   integer     NOT NULL,
+    created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE NULLS NOT DISTINCT (parent_id, name)
+);
