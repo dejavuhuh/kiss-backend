@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.context.jdbc.Sql
@@ -23,6 +24,7 @@ import org.testcontainers.utility.DockerImageName
 
 @Transactional
 @SpringBootTest
+@ActiveProfiles("test")
 @Sql(statements = ["INSERT INTO \"user\" (display_name) VALUES ('TEST_USER');"])
 @ExtendWith(MockUserExtension::class)
 @Testcontainers

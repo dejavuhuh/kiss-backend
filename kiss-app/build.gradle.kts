@@ -38,6 +38,7 @@ dependencies {
     implementation("io.minio:minio:8.5.17")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.alipay.sdk:alipay-sdk-java:4.40.186.ALL")
+    implementation("com.google.devtools.ksp:symbol-processing-api:2.0.21+")
 
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     runtimeOnly("org.postgresql:postgresql")
