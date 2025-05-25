@@ -1,9 +1,9 @@
 import io.freefair.gradle.plugins.aspectj.AjcAction
 
 plugins {
-    kotlin("jvm") version "2.0.21"
-    kotlin("plugin.spring") version "2.0.21"
-    id("com.google.devtools.ksp") version "2.0.21+"
+    kotlin("jvm") version "2.1.20"
+    kotlin("plugin.spring") version "2.1.20"
+    id("com.google.devtools.ksp") version "2.1.20+"
     id("org.springframework.boot") version "3.4.3"
     id("io.spring.dependency-management") version "1.1.7"
     id("io.freefair.aspectj.post-compile-weaving") version "8.13"
@@ -38,7 +38,6 @@ dependencies {
     implementation("io.minio:minio:8.5.17")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.alipay.sdk:alipay-sdk-java:4.40.186.ALL")
-    implementation("com.google.devtools.ksp:symbol-processing-api:2.0.21+")
 
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     runtimeOnly("org.postgresql:postgresql")

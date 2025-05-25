@@ -10,16 +10,12 @@ import org.springframework.web.bind.annotation.RequestMethod
 interface Api : BaseEntity {
 
     @ManyToOne
-    @Key(group = "uk_group_name")
-    @Key(group = "uk_method_path")
     val group: ApiGroup
 
-    @Key(group = "uk_group_name")
     val name: String
 
-    @Key(group = "uk_method_path")
     val method: RequestMethod
 
-    @Key(group = "uk_method_path")
+    @Key
     val path: String
 }
