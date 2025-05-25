@@ -22,7 +22,7 @@ class ApiCollector(val sql: KSqlClient) : ApplicationRunner {
         val apiGroups = metadata.services
             .filter { it.javaType.kotlin !in ignoredControllers }
             .map(::createApiGroup)
-        sql.saveEntities(apiGroups)
+//        sql.saveEntities(apiGroups)
     }
 
     private fun createApiGroup(service: Service): ApiGroup {

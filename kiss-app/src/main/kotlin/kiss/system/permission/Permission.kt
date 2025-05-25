@@ -1,6 +1,7 @@
 package kiss.system.permission
 
 import kiss.jimmer.BaseEntity
+import kiss.system.api.Api
 import kiss.system.role.Role
 import org.babyfish.jimmer.sql.*
 
@@ -31,6 +32,9 @@ interface Permission : BaseEntity {
 
     @OneToMany(mappedBy = "permission")
     val auditLogs: List<PermissionAuditLog>
+
+    @ManyToMany
+    val apis: List<Api>
 }
 
 enum class PermissionType {
