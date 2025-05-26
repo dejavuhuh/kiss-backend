@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.util.concurrent.TimeUnit
 
+/**
+ * S3服务
+ */
 @RestController
 @RequestMapping("/s3")
 class S3Service(
@@ -40,6 +43,9 @@ class S3Service(
         }
     }
 
+    /**
+     * 获取预签名URL
+     */
     @GetMapping("/preSignedUrl")
     fun preSignedUrl(
         @RequestParam bucket: String,

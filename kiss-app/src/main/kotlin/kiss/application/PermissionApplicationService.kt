@@ -9,11 +9,17 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
+/**
+ * 权限申请管理
+ */
 @Transactional
 @RestController
 @RequestMapping("/permission-applications")
 class PermissionApplicationService(val sql: KSqlClient) {
 
+    /**
+     * 发起权限申请
+     */
     @PostMapping
     fun create(@RequestBody input: PermissionApplicationInput) {
         sql.save(input, SaveMode.INSERT_ONLY)

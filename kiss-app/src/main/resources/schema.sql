@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS api;
+DROP TABLE IF EXISTS api_group;
+DROP TABLE IF EXISTS product_category;
 DROP TABLE IF EXISTS "order";
 DROP TABLE IF EXISTS subscription_plan;
 DROP TABLE IF EXISTS permission_application_permission_mapping;
@@ -185,4 +188,30 @@ CREATE TABLE IF NOT EXISTS product_category
     sort_order   integer     NOT NULL,
     created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE NULLS NOT DISTINCT (parent_id, name)
+);
+
+CREATE TABLE IF NOT EXISTS api_group
+(
+    id           integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name         text        NOT NULL,
+    created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (name)
+);
+
+CREATE TABLE IF NOT EXISTS api
+(
+    id           integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    group_id     integer     NOT NULL REFERENCES api_group,
+    name         text        NOT NULL,
+    method       text        NOT NULL,
+    path         text        NOT NULL,
+    created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (group_id, path)
+);
+
+CREATE TABLE IF NOT EXISTS permission_api_mapping
+(
+    permission_id integer NOT NULL REFERENCES permission,
+    api_id        integer NOT NULL REFERENCES api,
+    PRIMARY KEY (permission_id, api_id)
 );

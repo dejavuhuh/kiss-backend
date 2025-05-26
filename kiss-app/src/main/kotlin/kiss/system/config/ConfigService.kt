@@ -14,21 +14,33 @@ import org.babyfish.jimmer.sql.kt.fetcher.newFetcher
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
+/**
+ * 配置管理
+ */
 @Transactional
 @RestController
 @RequestMapping("/config")
 class ConfigService(val sql: KSqlClient) {
 
+    /**
+     * 查询配置列表
+     */
     @GetMapping
     fun list(): List<@FetchBy("LIST_ITEM") Config> = sql.executeQuery(Config::class) {
         select(table.fetch(LIST_ITEM))
     }
 
+    /**
+     * 创建配置
+     */
     @PostMapping
     fun create(@RequestBody input: ConfigInput) {
         sql.insertOnly(input)
     }
 
+    /**
+     * 保存YAML
+     */
     @PutMapping("/{id}/save-yaml")
     fun saveYaml(@PathVariable id: Int, @RequestBody input: SaveYamlInput) {
         try {
@@ -46,16 +58,25 @@ class ConfigService(val sql: KSqlClient) {
         })
     }
 
+    /**
+     * 查询配置详情
+     */
     @GetMapping("/{id}")
     fun get(@PathVariable id: Int): @FetchBy("DETAIL") Config {
         return sql.findOneById(DETAIL, id)
     }
 
+    /**
+     * 删除配置
+     */
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: Int) {
         sql.deleteById(Config::class, id)
     }
 
+    /**
+     * 查询配置历史
+     */
     @GetMapping("/{id}/histories")
     fun listHistories(@PathVariable id: Int): List<@FetchBy("HISTORY_LIST_ITEM") ConfigHistory> {
         return sql.executeQuery(ConfigHistory::class) {

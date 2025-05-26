@@ -1,5 +1,7 @@
 package kiss.system.permission
 
+import kiss.system.api.Api
+import kiss.system.api.by
 import kiss.system.role.id
 import org.babyfish.jimmer.sql.kt.fetcher.newFetcher
 
@@ -16,6 +18,15 @@ class PermissionFetchers {
                 name()
             }
             `children*`()
+        }
+
+        val API_LIST_ITEM = newFetcher(Api::class).by {
+            name()
+            method()
+            path()
+            group {
+                name()
+            }
         }
     }
 }

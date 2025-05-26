@@ -1,6 +1,8 @@
 package kiss.system.permission
 
 import kiss.jimmer.Immutables
+import kiss.system.api.Api
+import kiss.system.api.permissions
 import kiss.system.permission.dto.PermissionInput
 import kiss.system.role.Role
 import kiss.system.role.RoleFetchers
@@ -11,6 +13,7 @@ import org.babyfish.jimmer.sql.ast.mutation.SaveMode
 import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.babyfish.jimmer.sql.kt.ast.expression.eq
 import org.babyfish.jimmer.sql.kt.ast.expression.isNull
+import org.babyfish.jimmer.sql.kt.ast.expression.ne
 import org.springframework.http.HttpStatus
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
@@ -24,6 +27,9 @@ import org.springframework.web.bind.annotation.*
 @DefaultFetcherOwner(PermissionFetchers::class)
 class PermissionService(val sql: KSqlClient) {
 
+    /**
+     * 创建权限
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun create(@RequestBody input: PermissionInput): Permission {
@@ -39,6 +45,9 @@ class PermissionService(val sql: KSqlClient) {
         return savedEntity
     }
 
+    /**
+     * 更新权限
+     */
     @PutMapping("/{id}")
     fun update(@PathVariable id: Int, @RequestBody input: PermissionInput) {
         // check if the input is different from the old one
@@ -60,6 +69,9 @@ class PermissionService(val sql: KSqlClient) {
         }, SaveMode.INSERT_ONLY)
     }
 
+    /**
+     * 查询权限树
+     */
     @GetMapping
     fun list(): List<@FetchBy("LIST_ITEM") Permission> {
         return sql.executeQuery(Permission::class) {
@@ -68,6 +80,9 @@ class PermissionService(val sql: KSqlClient) {
         }
     }
 
+    /**
+     * 查询权限关联的角色
+     */
     @GetMapping("/{id}/roles")
     fun roles(@PathVariable id: Int): List<@FetchBy("SIMPLE", ownerType = RoleFetchers::class) Role> {
         return sql.executeQuery(Role::class) {
@@ -78,6 +93,9 @@ class PermissionService(val sql: KSqlClient) {
         }
     }
 
+    /**
+     * 绑定角色
+     */
     @PostMapping("/{id}/bindRoles")
     fun bindRoles(@PathVariable id: Int, @RequestBody roleIds: List<Int>) {
         sql.save(Permission {
@@ -93,6 +111,9 @@ class PermissionService(val sql: KSqlClient) {
         }, SaveMode.INSERT_ONLY)
     }
 
+    /**
+     * 删除权限
+     */
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: Int) {
         sql.deleteById(Permission::class, id)
@@ -102,5 +123,31 @@ class PermissionService(val sql: KSqlClient) {
             this.permissionId = id
             this.operation = Operation.DELETE
         }, SaveMode.INSERT_ONLY)
+    }
+
+    /**
+     * 查询未绑定的接口
+     */
+    @GetMapping("/{id}/unbound-apis")
+    fun unboundApis(@PathVariable id: Int): List<@FetchBy("API_LIST_ITEM") Api> {
+        return sql.executeQuery(Api::class) {
+            where += table.permissions {
+                this.id ne id
+            }
+            select(table.fetch(PermissionFetchers.API_LIST_ITEM))
+        }
+    }
+
+    /**
+     * 查询已绑定的接口
+     */
+    @GetMapping("/{id}/bound-apis")
+    fun boundApis(@PathVariable id: Int): List<@FetchBy("API_LIST_ITEM") Api> {
+        return sql.executeQuery(Api::class) {
+            where += table.permissions {
+                this.id eq id
+            }
+            select(table.fetch(PermissionFetchers.API_LIST_ITEM))
+        }
     }
 }

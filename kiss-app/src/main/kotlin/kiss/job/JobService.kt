@@ -6,6 +6,9 @@ import org.quartz.impl.matchers.GroupMatcher
 import org.springframework.aop.framework.AopProxyUtils
 import org.springframework.web.bind.annotation.*
 
+/**
+ * 定时任务管理
+ */
 @RestController
 @RequestMapping("/jobs")
 class JobService(
@@ -43,6 +46,9 @@ class JobService(
         }
     }
 
+    /**
+     * 查询定时任务列表
+     */
     @GetMapping
     fun list(): List<JobView> {
         return scheduler
@@ -57,6 +63,9 @@ class JobService(
             }
     }
 
+    /**
+     * 触发定时任务
+     */
     @PostMapping("/{name}/trigger")
     fun trigger(@PathVariable name: String) {
         scheduler.triggerJob(JobKey.jobKey(name))

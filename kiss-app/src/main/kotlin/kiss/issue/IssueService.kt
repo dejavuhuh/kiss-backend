@@ -15,21 +15,33 @@ import org.babyfish.jimmer.sql.kt.fetcher.newFetcher
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
+/**
+ * 问题管理
+ */
 @Transactional
 @RestController
 @RequestMapping("/issues")
 class IssueService(val sql: KSqlClient) {
 
+    /**
+     * 上报问题
+     */
     @PostMapping
     fun report(@RequestBody input: IssueInput) {
         sql.insertOnly(input)
     }
 
+    /**
+     * 查询问题详情
+     */
     @GetMapping("/{id}")
     fun get(@PathVariable id: Int): @FetchBy("GET") Issue {
         return sql.findOneById(GET, id)
     }
 
+    /**
+     * 查询问题列表
+     */
     @GetMapping
     fun list(
         @RequestParam pageIndex: Int,
@@ -42,7 +54,7 @@ class IssueService(val sql: KSqlClient) {
     }.fetchPage(pageIndex, pageSize)
 
     /**
-     * 获取可关联的问题列表
+     * 查询可关联的问题列表
      */
     @GetMapping("/{id}/relatable")
     fun relatable(@PathVariable id: Int): List<@FetchBy("RELATABLE") Issue> {
@@ -54,6 +66,9 @@ class IssueService(val sql: KSqlClient) {
         }
     }
 
+    /**
+     * 关联问题
+     */
     @PutMapping("/{id}/relateTo")
     fun relateTo(@PathVariable id: Int, @RequestParam relatedToId: Int) {
         sql.updateOnly(Issue {
@@ -62,6 +77,9 @@ class IssueService(val sql: KSqlClient) {
         })
     }
 
+    /**
+     * 取消关联问题
+     */
     @DeleteMapping("/{id}/unRelate")
     fun unRelate(@PathVariable id: Int) {
         sql.updateOnly(Issue {

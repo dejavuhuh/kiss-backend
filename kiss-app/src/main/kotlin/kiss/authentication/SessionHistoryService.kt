@@ -10,11 +10,17 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
+/**
+ * 历史会话管理
+ */
 @Transactional
 @RestController
 @RequestMapping("/session-histories")
 class SessionHistoryService(val sql: KSqlClient) {
 
+    /**
+     * 查询历史会话
+     */
     @GetMapping
     fun list(
         @RequestParam pageIndex: Int,

@@ -10,11 +10,17 @@ import org.babyfish.jimmer.sql.kt.fetcher.newFetcher
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
+/**
+ * 会话管理
+ */
 @Transactional
 @RestController
 @RequestMapping("/sessions")
 class SessionService(val sql: KSqlClient) {
 
+    /**
+     * 查询会话列表
+     */
     @GetMapping
     fun list(specification: SessionSpecification): List<@FetchBy("LIST_ITEM") Session> {
         return sql.executeQuery(Session::class) {
@@ -24,6 +30,9 @@ class SessionService(val sql: KSqlClient) {
         }
     }
 
+    /**
+     * 强制下线
+     */
     @PostMapping("/{id}/kickOut")
     fun kickOut(@PathVariable id: Int) {
         val (id, userId) = sql.createQuery(Session::class) {

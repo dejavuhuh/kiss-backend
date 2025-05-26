@@ -9,17 +9,26 @@ import org.babyfish.jimmer.sql.kt.ast.expression.isNull
 import org.babyfish.jimmer.sql.kt.fetcher.newFetcher
 import org.springframework.web.bind.annotation.*
 
+/**
+ * 商品分类管理
+ */
 @RestController
 @RequestMapping("/product-categories")
 class ProductCategoryService(val sql: KSqlClient) {
 
+    /**
+     * 创建商品分类
+     */
     @PostMapping
     fun create(@RequestBody input: ProductCategoryInput) {
         sql.save(input, SaveMode.INSERT_ONLY)
     }
 
+    /**
+     * 查询一级分类
+     */
     @GetMapping
-    fun list(): List<@FetchBy("LIST_ITEM") ProductCategory> {
+    fun listRoots(): List<@FetchBy("LIST_ITEM") ProductCategory> {
         return sql.executeQuery(ProductCategory::class) {
             where(table.parentId.isNull())
             orderBy(table.sortOrder)
@@ -27,6 +36,9 @@ class ProductCategoryService(val sql: KSqlClient) {
         }
     }
 
+    /**
+     * 根据上级分类 ID 查询下级分类
+     */
     @GetMapping("/{id}")
     fun listByParentId(@PathVariable id: Int): List<@FetchBy("LIST_ITEM") ProductCategory> {
         return sql.executeQuery(ProductCategory::class) {

@@ -1,6 +1,10 @@
 package kiss.system.api
 
 import kiss.authentication.AuthenticationService
+import kiss.feishu.FeishuService
+import kiss.logging.LoggingService
+import kiss.payment.recharge.RechargeService
+import kiss.payment.subscription.SubscriptionPlanService
 import org.babyfish.jimmer.client.runtime.Operation
 import org.babyfish.jimmer.client.runtime.Service
 import org.babyfish.jimmer.spring.client.Metadatas
@@ -8,21 +12,27 @@ import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.RequestMethod
 
 @Component
 class ApiCollector(val sql: KSqlClient) : ApplicationRunner {
 
     val ignoredControllers = listOf(
-        AuthenticationService::class
+        AuthenticationService::class,
+        SubscriptionPlanService::class,
+        RechargeService::class,
+        LoggingService::class,
+        FeishuService::class
     )
 
+    @Transactional
     override fun run(args: ApplicationArguments) {
         val metadata = Metadatas.create(false, null, null)
         val apiGroups = metadata.services
             .filter { it.javaType.kotlin !in ignoredControllers }
             .map(::createApiGroup)
-//        sql.saveEntities(apiGroups)
+        sql.saveEntities(apiGroups)
     }
 
     private fun createApiGroup(service: Service): ApiGroup {

@@ -5,6 +5,9 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.math.sqrt
 
+/**
+ * 故障演练
+ */
 @RestController
 @RequestMapping("/fault")
 class FaultService {
