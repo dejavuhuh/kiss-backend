@@ -150,4 +150,12 @@ class PermissionService(val sql: KSqlClient) {
             select(table.fetch(PermissionFetchers.API_LIST_ITEM))
         }
     }
+
+    /**
+     * 移除已绑定的接口
+     */
+    @DeleteMapping("/{id}/bound-apis/{apiId}")
+    fun unbindApi(@PathVariable id: Int, @PathVariable apiId: Int) {
+        sql.getAssociations(Permission::apis).delete(id, apiId)
+    }
 }

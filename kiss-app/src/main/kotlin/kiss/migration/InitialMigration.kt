@@ -1,5 +1,6 @@
 package kiss.migration
 
+import kiss.system.api.addBy
 import kiss.system.permission.Permission
 import kiss.system.permission.PermissionType
 import kiss.system.permission.addBy
@@ -11,8 +12,10 @@ import org.babyfish.jimmer.sql.ast.mutation.AssociatedSaveMode
 import org.babyfish.jimmer.sql.ast.mutation.SaveMode
 import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.mindrot.jbcrypt.BCrypt
+import org.springframework.context.annotation.DependsOn
 import org.springframework.stereotype.Component
 
+@DependsOn("apiCollector")
 @Component
 class InitialMigration(val sql: KSqlClient) : Migration {
 
@@ -51,6 +54,13 @@ class InitialMigration(val sql: KSqlClient) : Migration {
                         type = PermissionType.PAGE
                         code = "system:api"
                         name = "接口权限"
+                        apis()
+                            .addBy {
+                                path = "/permissions/{id}/unbound-apis"
+                            }
+                            .addBy {
+                                path = "/permissions/{id}/bound-apis"
+                            }
                     }
                     .addBy {
                         type = PermissionType.PAGE
@@ -126,7 +136,8 @@ class InitialMigration(val sql: KSqlClient) : Migration {
         )
         sql.saveEntities(permissions) {
             setMode(SaveMode.INSERT_ONLY)
-            setAssociatedModeAll(AssociatedSaveMode.APPEND)
+            setAssociatedMode(Permission::children, AssociatedSaveMode.APPEND)
+            setKeyOnlyAsReference(Permission::apis)
         }
 
         // 创建系统用户

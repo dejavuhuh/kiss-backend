@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS permission_api_mapping;
 DROP TABLE IF EXISTS api;
 DROP TABLE IF EXISTS api_group;
 DROP TABLE IF EXISTS product_category;
