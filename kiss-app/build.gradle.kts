@@ -37,7 +37,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("io.minio:minio:8.5.17")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("com.alipay.sdk:alipay-sdk-java:4.40.186.ALL")
+    implementation("com.alipay.sdk:alipay-sdk-java:4.40.186.ALL") {
+        exclude(group = "commons-logging", module = "commons-logging")
+    }
 
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     runtimeOnly("org.postgresql:postgresql")
@@ -55,7 +57,9 @@ dependencies {
     ksp("org.babyfish.jimmer:jimmer-ksp:latest.release")
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
     implementation("org.mindrot:jbcrypt:0.4")
-    implementation("com.larksuite.oapi:oapi-sdk:2.4.14")
+    implementation("com.larksuite.oapi:oapi-sdk:2.4.14") {
+        exclude(group = "commons-logging", module = "commons-logging")
+    }
 
     testImplementation("io.kotest:kotest-runner-junit5:5.9.1")
     testImplementation("io.kotest:kotest-assertions-core:5.9.1")

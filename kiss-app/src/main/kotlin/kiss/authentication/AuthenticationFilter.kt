@@ -49,8 +49,10 @@ class AuthenticationFilter(val sessionRepository: SessionRepository) : OncePerRe
         MDC.put("sessionId", id.toString())
         CurrentUserIdHolder.set(userId)
 
+        log.debug { "HTTP请求开始" }
         try {
             filterChain.doFilter(request, response)
+            log.debug { "HTTP请求完成" }
         } finally {
             CurrentUserIdHolder.remove()
             MDC.remove("sessionId")

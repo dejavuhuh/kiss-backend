@@ -14,11 +14,11 @@ jimmer:
       mutable: true
   mutation-transaction-required: true
   database-validation-mode: error
-  show-sql: true
-  pretty-sql: true
-  inline-sql-variables: true
+  #  show-sql: true
+  #  pretty-sql: true
+  #  inline-sql-variables: true
   executor-context-prefixes:
-    - kiss.system
+    - kiss
   default-dissociation-action-checkable: false
 spring:
   application:
@@ -44,7 +44,7 @@ management:
     port: 8001
 logging:
   level:
-    kiss.trace: debug
+    kiss.authentication: debug
   file:
     name: ${user.home}/logs/kiss.log
 minio:

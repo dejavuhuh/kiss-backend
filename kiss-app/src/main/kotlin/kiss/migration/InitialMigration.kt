@@ -58,10 +58,10 @@ class InitialMigration(val sql: KSqlClient) : Migration {
                                 method = RequestMethod.GET
                                 path = "/permissions/{id}/unbound-apis"
                             }
-//                            .addBy {
-//                                method = RequestMethod.GET
-//                                path = "/permissions/{id}/bound-apis"
-//                            }
+                            .addBy {
+                                method = RequestMethod.GET
+                                path = "/permissions/{id}/bound-apis"
+                            }
                             .addBy {
                                 method = RequestMethod.GET
                                 path = "/permissions"
@@ -76,6 +76,31 @@ class InitialMigration(val sql: KSqlClient) : Migration {
                         type = PermissionType.PAGE
                         code = "system:config"
                         name = "配置中心"
+                        apis()
+                            .addBy {
+                                method = RequestMethod.GET
+                                path = "/config"
+                            }
+                            .addBy {
+                                method = RequestMethod.GET
+                                path = "/config/{id}"
+                            }
+                            .addBy {
+                                method = RequestMethod.GET
+                                path = "/config/{id}/histories"
+                            }
+                            .addBy {
+                                method = RequestMethod.PUT
+                                path = "/config/{id}/save-yaml"
+                            }
+                            .addBy {
+                                method = RequestMethod.POST
+                                path = "/config"
+                            }
+                            .addBy {
+                                method = RequestMethod.DELETE
+                                path = "/config/{id}"
+                            }
                     }
             },
             Permission {
