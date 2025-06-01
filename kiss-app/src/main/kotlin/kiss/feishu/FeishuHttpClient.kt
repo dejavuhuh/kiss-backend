@@ -7,18 +7,18 @@ import okhttp3.Request
 
 class FeishuHttpClient {
     val client = OkHttpClient()
-}
 
-inline fun <reified T> FeishuHttpClient.execute(request: Request): T {
-    val response = executeRaw<Response<T>>(request)
-    if (response.code != OK) {
-        throw FeishuApiHttpException(response.code, response.msg)
+    inline fun <reified T> execute(request: Request): T {
+        val response = executeRaw<Response<T>>(request)
+        if (response.code != OK) {
+            throw FeishuApiHttpException(response.code, response.msg)
+        }
+        return response.data
     }
-    return response.data
-}
 
-inline fun <reified T> FeishuHttpClient.executeRaw(request: Request): T {
-    return client.newCall(request).json<T>()
+    inline fun <reified T> executeRaw(request: Request): T {
+        return client.newCall(request).json<T>()
+    }
 }
 
 class FeishuApiHttpException(code: Long, msg: String) : Exception("[${code}] $msg")
@@ -34,9 +34,7 @@ class FeishuApiException(response: BaseResponse<*>) : Exception(
 """.trimMargin()
 )
 
-const
-
-val OK = 0L
+const val OK = 0L
 
 data class Response<T>(
     val code: Long,

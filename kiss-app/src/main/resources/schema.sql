@@ -207,7 +207,7 @@ CREATE TABLE IF NOT EXISTS api
     method       text        NOT NULL,
     path         text        NOT NULL,
     created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (group_id, path)
+    UNIQUE (method, path)
 );
 
 CREATE TABLE IF NOT EXISTS permission_api_mapping

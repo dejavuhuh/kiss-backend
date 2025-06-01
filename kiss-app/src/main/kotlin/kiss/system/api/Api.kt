@@ -16,6 +16,7 @@ interface Api : BaseEntity {
 
     val name: String
 
+    @Key
     val method: RequestMethod
 
     @Key

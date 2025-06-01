@@ -12,10 +12,9 @@ import org.babyfish.jimmer.sql.ast.mutation.AssociatedSaveMode
 import org.babyfish.jimmer.sql.ast.mutation.SaveMode
 import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.mindrot.jbcrypt.BCrypt
-import org.springframework.context.annotation.DependsOn
 import org.springframework.stereotype.Component
+import org.springframework.web.bind.annotation.RequestMethod
 
-@DependsOn("apiCollector")
 @Component
 class InitialMigration(val sql: KSqlClient) : Migration {
 
@@ -56,10 +55,16 @@ class InitialMigration(val sql: KSqlClient) : Migration {
                         name = "接口权限"
                         apis()
                             .addBy {
+                                method = RequestMethod.GET
                                 path = "/permissions/{id}/unbound-apis"
                             }
+//                            .addBy {
+//                                method = RequestMethod.GET
+//                                path = "/permissions/{id}/bound-apis"
+//                            }
                             .addBy {
-                                path = "/permissions/{id}/bound-apis"
+                                method = RequestMethod.GET
+                                path = "/permissions"
                             }
                     }
                     .addBy {
@@ -137,7 +142,7 @@ class InitialMigration(val sql: KSqlClient) : Migration {
         sql.saveEntities(permissions) {
             setMode(SaveMode.INSERT_ONLY)
             setAssociatedMode(Permission::children, AssociatedSaveMode.APPEND)
-            setKeyOnlyAsReference(Permission::apis)
+            setKeyOnlyAsReferenceAll()
         }
 
         // 创建系统用户
