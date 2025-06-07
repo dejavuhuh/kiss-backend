@@ -3,4 +3,5 @@ export kiss.e_commerce.product.ProductCategory
 input ProductCategoryInput {
     #allScalars(this)
     id(parent)
+    -sortOrder
 }

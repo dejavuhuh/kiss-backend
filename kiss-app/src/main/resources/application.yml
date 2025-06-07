@@ -45,6 +45,7 @@ management:
 logging:
   level:
     kiss.authentication: debug
+    kiss.trace: debug
   file:
     name: ${user.home}/logs/kiss.log
 minio:

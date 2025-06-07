@@ -145,6 +145,19 @@ class InitialMigration(val sql: KSqlClient) : Migration {
                 type = PermissionType.PAGE
                 code = "fault"
                 name = "故障演练"
+                apis()
+                    .addBy {
+                        method = RequestMethod.POST
+                        path = "/fault/high-cpu"
+                    }
+                    .addBy {
+                        method = RequestMethod.GET
+                        path = "/fault/cpu-intensive"
+                    }
+                    .addBy {
+                        method = RequestMethod.POST
+                        path = "/fault/server-error"
+                    }
             },
             Permission {
                 type = PermissionType.DIRECTORY
@@ -160,6 +173,15 @@ class InitialMigration(val sql: KSqlClient) : Migration {
                                 type = PermissionType.PAGE
                                 code = "e-commerce:product:category"
                                 name = "商品分类"
+                                apis()
+                                    .addBy {
+                                        method = RequestMethod.GET
+                                        path = "/product-categories"
+                                    }
+                                    .addBy {
+                                        method = RequestMethod.POST
+                                        path = "/product-categories"
+                                    }
                             }
                     }
             },

@@ -6,12 +6,15 @@ import org.babyfish.jimmer.sql.ast.mutation.SaveMode
 import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.babyfish.jimmer.sql.kt.ast.expression.eq
 import org.babyfish.jimmer.sql.kt.ast.expression.isNull
+import org.babyfish.jimmer.sql.kt.ast.expression.max
 import org.babyfish.jimmer.sql.kt.fetcher.newFetcher
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
 /**
  * 商品分类管理
  */
+@Transactional
 @RestController
 @RequestMapping("/product-categories")
 class ProductCategoryService(val sql: KSqlClient) {
@@ -21,28 +24,23 @@ class ProductCategoryService(val sql: KSqlClient) {
      */
     @PostMapping
     fun create(@RequestBody input: ProductCategoryInput) {
-        sql.save(input, SaveMode.INSERT_ONLY)
+        val maxSortOrder = sql.createQuery(ProductCategory::class) {
+            where(table.parentId eq input.parentId)
+            select(max(table.sortOrder))
+        }.fetchOneOrNull() ?: 0
+        val entity = input.toEntity {
+            sortOrder = maxSortOrder + 1
+        }
+        sql.save(entity, SaveMode.INSERT_ONLY)
     }
 
     /**
-     * 查询一级分类
+     * 查询商品分类树
      */
     @GetMapping
-    fun listRoots(): List<@FetchBy("LIST_ITEM") ProductCategory> {
+    fun list(): List<@FetchBy("LIST_ITEM") ProductCategory> {
         return sql.executeQuery(ProductCategory::class) {
             where(table.parentId.isNull())
-            orderBy(table.sortOrder)
-            select(table.fetch(LIST_ITEM))
-        }
-    }
-
-    /**
-     * 根据上级分类 ID 查询下级分类
-     */
-    @GetMapping("/{id}")
-    fun listByParentId(@PathVariable id: Int): List<@FetchBy("LIST_ITEM") ProductCategory> {
-        return sql.executeQuery(ProductCategory::class) {
-            where(table.parentId eq id)
             orderBy(table.sortOrder)
             select(table.fetch(LIST_ITEM))
         }
@@ -51,6 +49,11 @@ class ProductCategoryService(val sql: KSqlClient) {
     companion object {
         val LIST_ITEM = newFetcher(ProductCategory::class).by {
             allScalarFields()
+            `children*`({
+                filter {
+                    orderBy(table.sortOrder)
+                }
+            })
         }
     }
 }

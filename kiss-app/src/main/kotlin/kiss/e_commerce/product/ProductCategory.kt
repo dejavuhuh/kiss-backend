@@ -16,8 +16,10 @@ interface ProductCategory : BaseEntity {
     @Key
     val name: String
 
+    val isLeaf: Boolean
+
     @OneToMany(mappedBy = "parent")
     val children: List<ProductCategory>
-    
+
     val sortOrder: Int
 }
