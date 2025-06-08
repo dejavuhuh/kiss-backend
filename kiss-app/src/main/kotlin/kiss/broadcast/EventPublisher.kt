@@ -1,45 +1,42 @@
 package kiss.broadcast
 
-import com.fasterxml.jackson.core.JacksonException
 import kiss.json.JsonSerializer
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
-import org.springframework.data.redis.connection.Message
 import org.springframework.data.redis.connection.RedisConnectionFactory
 import org.springframework.stereotype.Component
 
 @Component
 class EventPublisher(
     val redisConnectionFactory: RedisConnectionFactory,
-    val eventListeners: List<EventListener<*>>,
+    eventListeners: List<EventListener<*>>,
 ) : ApplicationRunner {
 
-    val channel = "events".toByteArray()
+    val eventListenerMap = eventListeners.associateBy { it.eventType.qualifiedName }
+    val channelPrefix = "events"
 
     fun publish(event: Any) {
+        val channelToPublish = "${channelPrefix}:${event::class.qualifiedName}"
+        val serializedEvent = JsonSerializer.serialize(event)
         redisConnectionFactory.connection.use {
-            it.publish(channel, JsonSerializer.serialize(event).toByteArray())
+            it.publish(channelToPublish.toByteArray(), serializedEvent.toByteArray())
         }
     }
 
     override fun run(args: ApplicationArguments) {
+        val channelsToSubscribe = eventListenerMap.keys.map { "$channelPrefix:$it" }
         redisConnectionFactory.connection.subscribe({ message, _ ->
-            for (listener in eventListeners) {
-                try {
-                    tryConsumeEvent(message, listener)
-                } catch (_: JacksonException) {
-                }
-            }
-        }, channel)
-    }
+            val channel = String(message.channel)
+            val eventType = channel.removePrefix("$channelPrefix:")
 
-    private fun tryConsumeEvent(
-        message: Message,
-        listener: EventListener<*>
-    ) {
-        val event = JsonSerializer.deserialize(String(message.body), listener.eventType.java)
-            ?: throw IllegalStateException("Deserialized event is null")
-        @Suppress("UNCHECKED_CAST")
-        (listener as EventListener<Any>).onEvent(event)
+            val listener = eventListenerMap[eventType]
+                ?: throw IllegalStateException("No listener for event type $eventType")
+            val event = JsonSerializer.deserialize(String(message.body), listener.eventType.java)
+                ?: throw IllegalStateException("Deserialized event is null")
+
+            @Suppress("UNCHECKED_CAST")
+            (listener as EventListener<Any>).onEvent(event)
+
+        }, *channelsToSubscribe.map(String::toByteArray).toTypedArray())
     }
 }
