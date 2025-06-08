@@ -21,8 +21,8 @@ object JsonSerializer {
     fun deserialize(json: String, type: Type): Any? {
         return objectMapper.readValue(json, objectMapper.constructType(type))
     }
-}
 
-inline fun <reified T> JsonSerializer.deserialize(json: String): T {
-    return objectMapper.readValue<T>(json)
+    inline fun <reified T> deserialize(json: String): T {
+        return objectMapper.readValue<T>(json)
+    }
 }

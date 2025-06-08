@@ -1,7 +1,6 @@
 package kiss.okhttp
 
 import kiss.json.JsonSerializer
-import kiss.json.deserialize
 import okhttp3.Call
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.Request
