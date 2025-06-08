@@ -9,6 +9,8 @@ services:
       - 'POSTGRES_DB=kiss'
       - 'POSTGRES_PASSWORD=kiss'
       - 'POSTGRES_USER=kiss'
+    labels:
+      org.springframework.boot.jdbc.parameters: 'reWriteBatchedInserts=true'
     ports:
       - '5432:5432'
   redis:

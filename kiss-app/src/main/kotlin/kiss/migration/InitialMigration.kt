@@ -20,7 +20,7 @@ class InitialMigration(val sql: KSqlClient) : Migration {
 
     override val version = 1
 
-    override fun execute() {
+    override fun migrate() {
         // 初始化菜单
         val permissions = listOf(
             Permission {
@@ -185,6 +185,22 @@ class InitialMigration(val sql: KSqlClient) : Migration {
                             }
                     }
             },
+            Permission {
+                type = PermissionType.DIRECTORY
+                code = "export"
+                name = "数据导出"
+                children()
+                    .addBy {
+                        type = PermissionType.PAGE
+                        code = "export:big-data"
+                        name = "海量数据导出"
+                        apis()
+                            .addBy {
+                                method = RequestMethod.POST
+                                path = "/export/demo/big-data/generate"
+                            }
+                    }
+            }
         )
         sql.saveEntities(permissions) {
             setMode(SaveMode.INSERT_ONLY)

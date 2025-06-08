@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS big_data;
 DROP TABLE IF EXISTS permission_api_mapping;
 DROP TABLE IF EXISTS api;
 DROP TABLE IF EXISTS api_group;
@@ -216,4 +217,19 @@ CREATE TABLE IF NOT EXISTS permission_api_mapping
     permission_id integer NOT NULL REFERENCES permission,
     api_id        integer NOT NULL REFERENCES api,
     PRIMARY KEY (permission_id, api_id)
+);
+
+CREATE TABLE IF NOT EXISTS big_data
+(
+    id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    a  text NOT NULL,
+    b  text NOT NULL,
+    c  text NOT NULL,
+    d  text NOT NULL,
+    e  text NOT NULL,
+    f  text NOT NULL,
+    g  text NOT NULL,
+    h  text NOT NULL,
+    i  text NOT NULL,
+    j  text NOT NULL
 );

@@ -6,7 +6,7 @@ interface Migration : Ordered {
 
     val version: Int
 
-    fun execute()
+    fun migrate()
 
     override fun getOrder() = version
 }

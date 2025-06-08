@@ -26,7 +26,7 @@ class MigrationExecutor(
 
         for (executor in executors) {
             if (executor.version > maxVersion) {
-                executor.execute()
+                executor.migrate()
                 sql.insertOnly(MigrationHistory {
                     version = executor.version
                 })

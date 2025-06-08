@@ -1,10 +1,7 @@
 package kiss.e_commerce.product
 
 import kiss.jimmer.BaseEntity
-import org.babyfish.jimmer.sql.Entity
-import org.babyfish.jimmer.sql.Key
-import org.babyfish.jimmer.sql.ManyToOne
-import org.babyfish.jimmer.sql.OneToMany
+import org.babyfish.jimmer.sql.*
 
 @Entity
 interface ProductCategory : BaseEntity {
@@ -16,6 +13,7 @@ interface ProductCategory : BaseEntity {
     @Key
     val name: String
 
+    @Default("false")
     val isLeaf: Boolean
 
     @OneToMany(mappedBy = "parent")
