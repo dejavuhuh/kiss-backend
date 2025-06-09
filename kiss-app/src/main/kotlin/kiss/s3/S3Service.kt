@@ -30,7 +30,7 @@ class S3Service(
 
     @PostConstruct
     fun initBuckets() {
-        val buckets = listOf("system-error-screenshot")
+        val buckets = listOf("system-error-screenshot", "export-task")
         for (bucket in buckets) {
             val found = minioClient.bucketExists(
                 BucketExistsArgs.builder().bucket(bucket).build()

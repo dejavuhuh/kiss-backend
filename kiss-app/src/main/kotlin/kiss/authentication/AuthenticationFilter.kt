@@ -16,12 +16,18 @@ private val log = KotlinLogging.logger {}
 @Order(Ordered.HIGHEST_PRECEDENCE + 1)
 class AuthenticationFilter(val sessionRepository: SessionRepository) : OncePerRequestFilter() {
 
-    val whiteList = listOf("/sign-in", "/sign-up", "/ts.zip", "/favicon.ico", "/feishu/authorize")
+    val whiteList = listOf(
+        "/sign-in",
+        "/sign-up",
+        "/ts.zip",
+        "/favicon.ico",
+        "/feishu/authorize",
+    )
 
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        filterChain: FilterChain
+        filterChain: FilterChain,
     ) {
         // 白名单
         if (whiteList.contains(request.requestURI)) {

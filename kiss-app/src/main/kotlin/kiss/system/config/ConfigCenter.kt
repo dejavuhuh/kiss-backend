@@ -17,11 +17,7 @@ inline fun <reified T> ConfigCenter.readYamlAsObject(name: String): T {
     val yaml = sql.createQuery(Config::class) {
         where(table.name eq name)
         select(table.yaml)
-    }.fetchOne()
-
-    if (yaml == null) {
-        throw IllegalStateException("Yaml not configured: $name")
-    }
+    }.fetchOneOrNull() ?: throw IllegalStateException("Yaml not configured: $name")
 
     return objectMapper.readValue<T>(yaml)
 }

@@ -199,6 +199,10 @@ class InitialMigration(val sql: KSqlClient) : Migration {
                                 method = RequestMethod.POST
                                 path = "/export/demo/big-data/generate"
                             }
+                            .addBy {
+                                method = RequestMethod.POST
+                                path = "/export/demo/big-data/export-task"
+                            }
                     }
             }
         )

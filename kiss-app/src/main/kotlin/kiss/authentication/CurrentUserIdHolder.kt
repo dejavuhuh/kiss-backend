@@ -1,7 +1,7 @@
 package kiss.authentication
 
 object CurrentUserIdHolder {
-    val holder = ThreadLocal<Int?>()
+    val holder = InheritableThreadLocal<Int?>()
 
     fun get(): Int {
         return holder.get() ?: throw IllegalStateException("Current user ID is not set")

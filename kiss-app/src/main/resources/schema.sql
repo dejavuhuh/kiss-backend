@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS export_task;
 DROP TABLE IF EXISTS big_data;
 DROP TABLE IF EXISTS permission_api_mapping;
 DROP TABLE IF EXISTS api;
@@ -232,4 +233,13 @@ CREATE TABLE IF NOT EXISTS big_data
     h  text NOT NULL,
     i  text NOT NULL,
     j  text NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS export_task
+(
+    id            integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    finished_time timestamptz NULL,
+    creator_id    integer     NOT NULL REFERENCES "user",
+    trace_id      text        NOT NULL,
+    created_time  timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

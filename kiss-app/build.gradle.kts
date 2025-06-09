@@ -58,7 +58,9 @@ dependencies {
     implementation("com.github.ben-manes.caffeine:caffeine:3.2.0")
     implementation("org.babyfish.jimmer:jimmer-spring-boot-starter:latest.release")
     ksp("org.babyfish.jimmer:jimmer-ksp:latest.release")
-    implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
+    implementation("io.github.oshai:kotlin-logging-jvm:7.0.3") {
+        exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib")
+    }
     implementation("org.mindrot:jbcrypt:0.4")
     implementation("com.larksuite.oapi:oapi-sdk:2.4.14") {
         exclude(group = "commons-logging", module = "commons-logging")
