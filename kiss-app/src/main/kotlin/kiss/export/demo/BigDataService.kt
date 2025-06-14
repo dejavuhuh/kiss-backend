@@ -28,40 +28,21 @@ class BigDataService(
 ) {
 
     @PostMapping("/generate")
-    fun generate(@RequestParam count: Long) {
+    fun generate(@RequestParam count: Int) {
         val value = Long.MAX_VALUE.toString()
+        val dataSequence = generateSequence(1L) { it + 1 }
+            .take(count)
+            .map { arrayOf(value, value, value, value, value, value, value, value, value, value) }
 
-        val data = (1..count).map {
-            BigData {
-                a = value
-                b = value
-                c = value
-                d = value
-                e = value
-                f = value
-                g = value
-                h = value
-                i = value
-                j = value
+        // 分批插入，防止 OOM
+        dataSequence
+            .chunked(10_0000)
+            .forEach { chunk ->
+                jdbcTemplate.batchUpdate(
+                    "INSERT INTO big_data (a, b, c, d, e, f, g, h, i, j) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    chunk,
+                )
             }
-        }
-
-        jdbcTemplate.batchUpdate(
-            "INSERT INTO big_data (a, b, c, d, e, f, g, h, i, j) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            data,
-            10000
-        ) { ps, it ->
-            ps.setString(1, it.a)
-            ps.setString(2, it.b)
-            ps.setString(3, it.c)
-            ps.setString(4, it.d)
-            ps.setString(5, it.e)
-            ps.setString(6, it.f)
-            ps.setString(7, it.g)
-            ps.setString(8, it.h)
-            ps.setString(9, it.i)
-            ps.setString(10, it.j)
-        }
     }
 
     @PostMapping("/export-task")
