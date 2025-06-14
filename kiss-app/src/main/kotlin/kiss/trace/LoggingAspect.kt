@@ -44,9 +44,9 @@ class LoggingAspect {
                 methodArgs[argName] = arg
             }
 
-            val serializedArgs = JsonSerializer.serialize(methodArgs, true)
+            val serializedArgs = JsonSerializer.serialize(methodArgs)
 
-            "进入REST端点|${className}.${methodName}|入参：\n$serializedArgs"
+            "进入REST端点|${className}.${methodName}|入参：$serializedArgs"
         }
     }
 }

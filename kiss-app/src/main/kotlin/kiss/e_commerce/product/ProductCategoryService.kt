@@ -49,11 +49,11 @@ class ProductCategoryService(val sql: KSqlClient) {
     companion object {
         val LIST_ITEM = newFetcher(ProductCategory::class).by {
             allScalarFields()
-            `children*`({
+            `children*` {
                 filter {
                     orderBy(table.sortOrder)
                 }
-            })
+            }
         }
     }
 }

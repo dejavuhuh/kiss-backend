@@ -6,7 +6,6 @@ import io.minio.MakeBucketArgs
 import io.minio.MinioClient
 import io.minio.http.Method
 import jakarta.annotation.PostConstruct
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -20,15 +19,7 @@ import java.util.concurrent.TimeUnit
  */
 @RestController
 @RequestMapping("/s3")
-class S3Service(
-    @Value("\${minio.endpoint}") val endpoint: String,
-    @Value("\${minio.access-key}") val accessKey: String,
-    @Value("\${minio.secret-key}") val secretKey: String,
-) {
-    private val minioClient = MinioClient.builder()
-        .endpoint(endpoint)
-        .credentials(accessKey, secretKey)
-        .build()
+class S3Service(val minioClient: MinioClient) {
 
     @PostConstruct
     fun initBuckets() {

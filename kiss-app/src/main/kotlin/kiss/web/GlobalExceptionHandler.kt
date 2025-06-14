@@ -26,16 +26,16 @@ class GlobalExceptionHandler(val alertManager: AlertManager) : ResponseEntityExc
     fun handleUnexpectedException(ex: Exception, request: HttpServletRequest): ProblemDetail {
         log.error(ex) { "服务器内部错误" }
 
-        // alertManager.sendAlertMessage(
-        //     title = "HTTP接口异常",
-        //     context = mapOf(
-        //         "请求地址" to request.requestURI,
-        //         "会话 ID" to MDC.get("sessionId"),
-        //         "Trace ID" to TraceIdHolder.get(),
-        //         "异常信息" to ex.message,
-        //     ),
-        //     digest = md5Hex(ex.stackTraceToString())
-        // )
+        alertManager.sendAlertMessage(
+            title = "HTTP接口异常",
+            context = mapOf(
+                "请求地址" to request.requestURI,
+                "会话 ID" to MDC.get("sessionId"),
+                "Trace ID" to TraceIdHolder.get(),
+                "异常信息" to ex.message,
+            ),
+            digest = md5Hex(ex.stackTraceToString())
+        )
 
         return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, "服务器内部错误")
     }
