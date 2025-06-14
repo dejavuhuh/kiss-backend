@@ -203,6 +203,14 @@ class InitialMigration(val sql: KSqlClient) : Migration {
                                 method = RequestMethod.POST
                                 path = "/export/demo/big-data/export-task"
                             }
+                            .addBy {
+                                method = RequestMethod.GET
+                                path = "/export-tasks"
+                            }
+                            .addBy {
+                                method = RequestMethod.GET
+                                path = "/s3/preSignedUrl"
+                            }
                     }
             }
         )

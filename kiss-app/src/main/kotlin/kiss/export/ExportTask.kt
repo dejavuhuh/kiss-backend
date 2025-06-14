@@ -9,6 +9,8 @@ import org.babyfish.jimmer.sql.Entity
 @Entity
 interface ExportTask : BaseEntity, Creator, Traceable {
 
+    val scene: ExportTaskScene
+
     @Default("PENDING")
     val status: ExportTaskStatus
 }
@@ -17,4 +19,8 @@ enum class ExportTaskStatus {
     PENDING,
     DONE,
     FAILED,
+}
+
+enum class ExportTaskScene {
+    BIG_DATA
 }

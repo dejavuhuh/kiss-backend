@@ -2,6 +2,7 @@ package kiss.export.demo
 
 import io.minio.http.Method
 import kiss.export.ExportTask
+import kiss.export.ExportTaskScene
 import kiss.export.ExportTaskStatus
 import kiss.s3.S3Service
 import kiss.util.go
@@ -66,7 +67,9 @@ class BigDataService(
     @PostMapping("/export-task")
     fun createExportTask(): Int {
         val savedTask = sql.transaction {
-            sql.save(ExportTask {}, SaveMode.INSERT_ONLY).modifiedEntity
+            sql.save(ExportTask {
+                this.scene = ExportTaskScene.BIG_DATA
+            }, SaveMode.INSERT_ONLY).modifiedEntity
         }
         val taskId = savedTask.id
 
