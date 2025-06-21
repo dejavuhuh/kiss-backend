@@ -91,7 +91,7 @@ class BigDataService(
             }
 
             val outputStream = PipedOutputStream()
-            val inputStream = PipedInputStream(outputStream)
+            val inputStream = PipedInputStream(outputStream, 5242880)
 
             go {
                 outputStream.use(wb::write)

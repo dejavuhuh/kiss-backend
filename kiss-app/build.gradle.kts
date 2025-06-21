@@ -65,6 +65,7 @@ dependencies {
     implementation("com.larksuite.oapi:oapi-sdk:2.4.14") {
         exclude(group = "commons-logging", module = "commons-logging")
     }
+    implementation("com.google.genai:google-genai:1.5.0")
 
     testImplementation("io.kotest:kotest-runner-junit5:5.9.1")
     testImplementation("io.kotest:kotest-assertions-core:5.9.1")
