@@ -1,4 +1,5 @@
 import io.freefair.gradle.plugins.aspectj.AjcAction
+import java.util.*
 
 plugins {
     kotlin("jvm") version "2.1.20"
@@ -65,7 +66,10 @@ dependencies {
     implementation("com.larksuite.oapi:oapi-sdk:2.4.14") {
         exclude(group = "commons-logging", module = "commons-logging")
     }
-    implementation("com.google.genai:google-genai:1.5.0")
+    implementation("com.google.genai:google-genai:1.7.0")
+    implementation("io.github.smiley4:schema-kenerator-core:2.2.0")
+    implementation("io.github.smiley4:schema-kenerator-jsonschema:2.2.0")
+    implementation("io.github.smiley4:schema-kenerator-reflection:2.2.0")
 
     testImplementation("io.kotest:kotest-runner-junit5:5.9.1")
     testImplementation("io.kotest:kotest-assertions-core:5.9.1")
@@ -90,6 +94,18 @@ tasks.compileTestKotlin {
 tasks.test {
     useJUnitPlatform()
     finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
+
+    val envFile = rootProject.file(".env")
+    if (!envFile.exists()) {
+        throw GradleException("请确保项目根目录下存在.env文件")
+    }
+    val properties = Properties()
+    envFile.reader().use { properties.load(it) }
+    properties.forEach {
+        val key = it.key.toString()
+        val value = it.value
+        environment(key, value)
+    }
 }
 tasks.jacocoTestReport {
     dependsOn(tasks.test) // tests are required to run before generating the report
