@@ -42,6 +42,9 @@ management:
         include: '*'
   server:
     port: 8001
+  metrics:
+    tags:
+      application: ${spring.application.name}
 logging:
   level:
     kiss.authentication: debug
