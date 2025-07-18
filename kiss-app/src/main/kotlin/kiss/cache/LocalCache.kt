@@ -39,7 +39,7 @@ class LocalCacheAspect : CacheAspect() {
                     cache = Caffeine
                         .newBuilder()
                         .expireAfterWrite(localCache.expireAfterWriteSeconds, TimeUnit.SECONDS)
-                        .build<String, Any?>()
+                        .build()
                     cacheMap[cacheName] = cache
                 }
             } finally {

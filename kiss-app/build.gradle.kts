@@ -2,7 +2,6 @@ import io.freefair.gradle.plugins.aspectj.AjcAction
 import java.util.*
 
 plugins {
-    kotlin("jvm") version "2.1.20"
     kotlin("plugin.spring") version "2.1.20"
     id("com.google.devtools.ksp") version "2.1.20+"
     id("org.springframework.boot") version "3.4.3"
@@ -75,6 +74,8 @@ dependencies {
     testImplementation("io.kotest:kotest-assertions-core:5.9.1")
     testImplementation("io.mockk:mockk:1.13.17")
     testImplementation("org.testcontainers:minio:1.21.0")
+    implementation("org.redisson:redisson-spring-boot-starter:3.50.0")
+    testImplementation("com.redis:testcontainers-redis:2.2.4")
 }
 
 kotlin {
