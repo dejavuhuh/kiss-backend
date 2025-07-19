@@ -3,21 +3,25 @@ package kiss.lock
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kiss.web.BusinessException
 import org.aspectj.lang.ProceedingJoinPoint
+import org.aspectj.lang.annotation.Around
+import org.aspectj.lang.annotation.Aspect
 import java.time.Duration
 
 private val log = KotlinLogging.logger {}
 
-//@Aspect
+@Aspect
 class DistributedLockAspect {
 
-    lateinit var distributedLockTemplate: DistributedLockTemplate
+    companion object {
+        lateinit var template: DistributedLockTemplate
+    }
 
-    //    @Around("@annotation(DistributedLock) && execution(* *(..))")
+    @Around("@annotation(annotation) && execution(* *(..))")
     fun intercept(joinPoint: ProceedingJoinPoint, annotation: DistributedLock): Any? {
         val parser = KeyExpressionParser(joinPoint)
-        val lockKey = parser.parse(annotation.keyExpression)
+        val lockKey = parser.parse(annotation.keyExpression) ?: throw NullPointerException("Parsed lock key is null, expression: ${annotation.keyExpression}")
         return try {
-            distributedLockTemplate.execute(
+            template.execute(
                 key = lockKey,
                 waitTime = Duration.ofSeconds(annotation.waitSeconds),
                 block = joinPoint::proceed

@@ -9,7 +9,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser
 class KeyExpressionParser(private val joinPoint: ProceedingJoinPoint) {
     private val parser = SpelExpressionParser()
 
-    fun parse(keyExpression: String): String {
+    fun parse(keyExpression: String): String? {
         val methodSignature = joinPoint.signature as MethodSignature
         val method = methodSignature.method
         val args = joinPoint.args
@@ -23,8 +23,6 @@ class KeyExpressionParser(private val joinPoint: ProceedingJoinPoint) {
         )
 
         val expression = parser.parseExpression(keyExpression)
-        return expression.getValue(context, String::class.java) ?: throw ExpressionParseException(keyExpression)
+        return expression.getValue(context, String::class.java)
     }
 }
-
-class ExpressionParseException(expression: String) : Exception("Invalid key expression: $expression")

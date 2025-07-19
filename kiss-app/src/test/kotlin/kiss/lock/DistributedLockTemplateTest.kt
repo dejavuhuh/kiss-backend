@@ -1,14 +1,13 @@
 package kiss.lock
 
-import com.redis.testcontainers.RedisContainer
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.longs.shouldBeInRange
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import kiss.RedisContainer
 import org.junit.jupiter.api.Test
 import org.redisson.Redisson
 import org.redisson.config.Config
-import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import java.time.Duration
 import java.util.concurrent.CompletableFuture
@@ -17,20 +16,12 @@ import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
 
 @Testcontainers
-class DistributedLockTest {
-    companion object {
-
-        @Container
-        private val redis = RedisContainer(
-            RedisContainer.DEFAULT_IMAGE_NAME.withTag(RedisContainer.DEFAULT_TAG)
-        ).also { it.start() }
-
-        private val redissonClient = run {
-            val config = Config().apply {
-                useSingleServer().setAddress("redis://${redis.redisHost}:${redis.redisPort}")
-            }
-            Redisson.create(config)
+class DistributedLockTemplateTest : RedisContainer {
+    private val redissonClient = run {
+        val config = Config().apply {
+            useSingleServer().setAddress("redis://${redisHost}:${redisPort}")
         }
+        Redisson.create(config)
     }
 
     @Test
