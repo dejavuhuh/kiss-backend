@@ -1,11 +1,9 @@
 package kiss.lock
 
 import org.redisson.api.RedissonClient
-import org.springframework.stereotype.Component
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 
-@Component
 class DistributedLockTemplate(val redissonClient: RedissonClient) {
 
     fun <R> execute(
