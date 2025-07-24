@@ -1,10 +1,11 @@
 package kiss.e_commerce.product
 
 import kiss.jimmer.BaseEntity
+import kiss.jimmer.Enabled
 import org.babyfish.jimmer.sql.*
 
 @Entity
-interface ProductCategory : BaseEntity {
+interface ProductCategory : BaseEntity, Enabled {
 
     @Key
     @ManyToOne
@@ -20,4 +21,6 @@ interface ProductCategory : BaseEntity {
     val children: List<ProductCategory>
 
     val sortOrder: Int
+
+    val banner: String?
 }

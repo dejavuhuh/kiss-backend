@@ -190,8 +190,11 @@ CREATE TABLE IF NOT EXISTS product_category
     name         text        NOT NULL,
     is_leaf      boolean     NOT NULL,
     sort_order   integer     NOT NULL,
+    enabled      boolean     NOT NULL,
+    banner       text        NULL,
     created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE NULLS NOT DISTINCT (parent_id, name)
+    UNIQUE NULLS NOT DISTINCT (parent_id, name),
+    CHECK ( is_leaf = FALSE OR banner IS NOT NULL )
 );
 
 CREATE TABLE IF NOT EXISTS api_group

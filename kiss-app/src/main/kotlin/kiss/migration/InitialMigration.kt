@@ -212,6 +212,17 @@ class InitialMigration(val sql: KSqlClient) : Migration {
                                 path = "/s3/preSignedUrl"
                             }
                     }
+            },
+            Permission {
+                type = PermissionType.DIRECTORY
+                code = "component"
+                name = "自定义组件"
+                children()
+                    .addBy {
+                        type = PermissionType.PAGE
+                        code = "component:s3-upload"
+                        name = "S3上传组件"
+                    }
             }
         )
         sql.saveEntities(permissions) {
