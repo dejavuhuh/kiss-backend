@@ -5,11 +5,9 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import kiss.authentication.CurrentUserIdHolder
-import kiss.system.permission.roles
-import kiss.system.role.users
-import kiss.system.user.id
 import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.babyfish.jimmer.sql.kt.ast.expression.eq
+import org.babyfish.jimmer.sql.kt.exists
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
@@ -59,18 +57,12 @@ class ApiPermissionFilter(
         val method = methodRequestMapping.method[0]
         val path = controllerRequestMapping.value[0] + (methodRequestMapping.value.firstOrNull() ?: "")
 
-        val authorized = sql.createQuery(Api::class) {
-            where(table.method eq method)
-            where(table.path eq path)
-            where += table.permissions {
-                this.roles {
-                    this.users {
-                        this.id eq CurrentUserIdHolder.get()
-                    }
-                }
-            }
-            select(table)
-        }.exists()
+        // 使用物化视图简化查询
+        val authorized = sql.exists(UserApiPermissions::class) {
+            where(table.userId eq CurrentUserIdHolder.get())
+            where(table.apiMethod eq method)
+            where(table.apiPath eq path)
+        }
 
         if (!authorized) {
             log.error { "接口权限校验失败：${request.method} ${request.requestURI}" }

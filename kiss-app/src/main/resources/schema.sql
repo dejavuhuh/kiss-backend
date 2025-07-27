@@ -1,3 +1,4 @@
+DROP MATERIALIZED VIEW IF EXISTS user_api_permissions_mv;
 DROP TABLE IF EXISTS export_task;
 DROP TABLE IF EXISTS big_data;
 DROP TABLE IF EXISTS permission_api_mapping;
@@ -247,3 +248,21 @@ CREATE TABLE IF NOT EXISTS export_task
     trace_id     text        NOT NULL,
     created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+-- 物化视图
+CREATE MATERIALIZED VIEW user_api_permissions_mv AS
+SELECT DISTINCT ROW_NUMBER() OVER (ORDER BY u.id, a.id) AS id,
+                u.id                                    AS user_id,
+                a.method                                AS api_method,
+                a.path                                  AS api_path
+FROM "user" AS u
+         JOIN
+     user_role_mapping AS urm ON u.id = urm.user_id
+         JOIN
+     role_permission_mapping AS rpm ON urm.role_id = rpm.role_id
+         JOIN
+     permission_api_mapping AS pam ON rpm.permission_id = pam.permission_id
+         JOIN
+     api AS a ON pam.api_id = a.id;
+CREATE UNIQUE INDEX idx_user_api_permissions_mv
+    ON user_api_permissions_mv (user_id, api_method, api_path);

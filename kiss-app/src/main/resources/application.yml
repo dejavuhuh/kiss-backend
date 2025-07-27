@@ -32,7 +32,6 @@ spring:
   sql:
     init:
       mode: always
-      continue-on-error: true
 server:
   port: 8000
 management:
