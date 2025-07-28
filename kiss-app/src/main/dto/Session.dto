@@ -2,9 +2,17 @@ export kiss.authentication.Session
 
 specification SessionSpecification {
     id
-    flat(user) {
+    flat(user){
         like/i(displayName)
     }
     ge(createdTime)
     le(createdTime)
+}
+
+UserSession {
+    id
+    user {
+        id
+    }
+    expiredTime
 }

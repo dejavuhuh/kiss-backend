@@ -32,6 +32,11 @@ class InitialMigration(val sql: KSqlClient) : Migration {
                         type = PermissionType.PAGE
                         code = "system:user"
                         name = "用户管理"
+                        apis()
+                            .addBy {
+                                method = RequestMethod.GET
+                                path = "/users"
+                            }
                     }
                     .addBy {
                         type = PermissionType.PAGE

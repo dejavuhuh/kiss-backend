@@ -56,17 +56,17 @@ class AuthenticationService(
     @PostMapping("/sign-out")
     fun signOut(request: HttpServletRequest) {
         val token = request.getHeader("Authorization").substring(7)
-        val (id, userId) = sessionRepository.get(token) ?: return
+        val session = sessionRepository.get(token) ?: return
 
         sql.save(SessionHistory {
-            this.id = id
-            this.userId = userId
+            this.id = session.id
+            this.userId = session.user.id
             this.reason = HistoryReason.SIGN_OUT
         }) {
             setMode(SaveMode.INSERT_ONLY)
         }
 
-        sql.deleteById(Session::class, id)
+        sql.deleteById(Session::class, session.id)
     }
 
     @GetMapping("/current-user")

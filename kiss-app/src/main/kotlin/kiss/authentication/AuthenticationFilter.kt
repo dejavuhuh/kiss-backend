@@ -19,6 +19,7 @@ class AuthenticationFilter(val sessionRepository: SessionRepository) : OncePerRe
     val whiteList = listOf(
         "/sign-in",
         "/sign-up",
+        "/sign-out",
         "/ts.zip",
         "/favicon.ico",
         "/feishu/authorize",
@@ -47,13 +48,16 @@ class AuthenticationFilter(val sessionRepository: SessionRepository) : OncePerRe
         }
 
         val token = authorization.substring(7)
-        val (id, userId) = sessionRepository.get(token) ?: run {
+        val session = sessionRepository.get(token) ?: run {
             unauthorized("Token is invalid", response)
             return
         }
 
-        MDC.put("sessionId", id.toString())
-        CurrentUserIdHolder.set(userId)
+        // 会话续期
+        sessionRepository.tryRenew(session)
+
+        MDC.put("sessionId", session.id.toString())
+        CurrentUserIdHolder.set(session.user.id)
 
         log.debug { "HTTP请求开始" }
         try {

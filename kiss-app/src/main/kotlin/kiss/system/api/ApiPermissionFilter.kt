@@ -50,12 +50,11 @@ class ApiPermissionFilter(
         }
 
         val controllerRequestMapping = handler.beanType.getAnnotation(RequestMapping::class.java)
-            ?: throw IllegalStateException("Controller must be annotated with `@RequestMapping`")
         val methodRequestMapping = handler.getMethodAnnotation(RequestMapping::class.java)
             ?: throw IllegalStateException("Controller method must be annotated with `@RequestMapping`")
 
         val method = methodRequestMapping.method[0]
-        val path = controllerRequestMapping.value[0] + (methodRequestMapping.value.firstOrNull() ?: "")
+        val path = (controllerRequestMapping?.value[0] ?: "") + (methodRequestMapping.value.firstOrNull() ?: "")
 
         // 使用物化视图简化查询
         val authorized = sql.exists(UserApiPermissions::class) {

@@ -19,6 +19,8 @@ DROP TABLE IF EXISTS permission_audit_log;
 DROP TABLE IF EXISTS permission;
 DROP TABLE IF EXISTS role;
 DROP TABLE IF EXISTS session_history;
+DROP TRIGGER IF EXISTS update_user_last_active_time ON session;
+DROP FUNCTION IF EXISTS update_user_last_active_time;
 DROP TABLE IF EXISTS session;
 DROP TABLE IF EXISTS account;
 DROP TABLE IF EXISTS feishu_user;
@@ -26,9 +28,10 @@ DROP TABLE IF EXISTS "user";
 
 CREATE TABLE IF NOT EXISTS "user"
 (
-    id           integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    display_name text        NOT NULL,
-    created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP
+    id               integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    display_name     text        NOT NULL,
+    created_time     timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_active_time timestamptz NULL
 );
 
 CREATE TABLE IF NOT EXISTS feishu_user
@@ -56,6 +59,19 @@ CREATE TABLE IF NOT EXISTS session
     expired_time timestamptz NOT NULL,
     UNIQUE (token)
 );
+-- 触发器：当会话被创建或者过期时间被更新(租期)时，自动更新用户最后活跃时间
+CREATE OR REPLACE FUNCTION update_user_last_active_time() RETURNS TRIGGER AS
+'
+BEGIN
+    UPDATE "user" SET last_active_time = CURRENT_TIMESTAMP WHERE id = NEW.user_id;
+    RETURN NEW;
+END;
+' LANGUAGE plpgsql;
+CREATE TRIGGER update_user_last_active_time
+    AFTER INSERT OR UPDATE OF expired_time
+    ON session
+    FOR EACH ROW
+EXECUTE PROCEDURE update_user_last_active_time();
 
 CREATE TABLE IF NOT EXISTS session_history
 (
