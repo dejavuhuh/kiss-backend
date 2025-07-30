@@ -1,10 +1,10 @@
+DROP TABLE IF EXISTS product_category;
 DROP MATERIALIZED VIEW IF EXISTS user_api_permissions_mv;
 DROP TABLE IF EXISTS export_task;
 DROP TABLE IF EXISTS big_data;
 DROP TABLE IF EXISTS permission_api_mapping;
 DROP TABLE IF EXISTS api;
 DROP TABLE IF EXISTS api_group;
-DROP TABLE IF EXISTS product_category;
 DROP TABLE IF EXISTS "order";
 DROP TABLE IF EXISTS subscription_plan;
 DROP TABLE IF EXISTS permission_application_permission_mapping;
@@ -62,10 +62,12 @@ CREATE TABLE IF NOT EXISTS session
 -- 触发器：当会话被创建或者过期时间被更新(租期)时，自动更新用户最后活跃时间
 CREATE OR REPLACE FUNCTION update_user_last_active_time() RETURNS TRIGGER AS
 '
-BEGIN
-    UPDATE "user" SET last_active_time = CURRENT_TIMESTAMP WHERE id = NEW.user_id;
-    RETURN NEW;
-END;
+    BEGIN
+        UPDATE "user"
+        SET last_active_time = CURRENT_TIMESTAMP
+        WHERE id = NEW.user_id;
+        RETURN NEW;
+    END;
 ' LANGUAGE plpgsql;
 CREATE TRIGGER update_user_last_active_time
     AFTER INSERT OR UPDATE OF expired_time
@@ -200,20 +202,6 @@ CREATE TABLE IF NOT EXISTS "order"
     created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS product_category
-(
-    id           integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    parent_id    integer     NULL REFERENCES product_category,
-    name         text        NOT NULL,
-    is_leaf      boolean     NOT NULL,
-    sort_order   integer     NOT NULL,
-    enabled      boolean     NOT NULL,
-    banner       text        NULL,
-    created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE NULLS NOT DISTINCT (parent_id, name),
-    CHECK ( is_leaf = FALSE OR banner IS NOT NULL )
-);
-
 CREATE TABLE IF NOT EXISTS api_group
 (
     id           integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -282,3 +270,112 @@ FROM "user" AS u
      api AS a ON pam.api_id = a.id;
 CREATE UNIQUE INDEX idx_user_api_permissions_mv
     ON user_api_permissions_mv (user_id, api_method, api_path);
+
+/* 电商领域模型 */
+-- 商品分类
+CREATE TABLE IF NOT EXISTS product_category
+(
+    id           integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    parent_id    integer     NULL REFERENCES product_category,
+    name         text        NOT NULL,
+    is_leaf      boolean     NOT NULL,
+    sort_order   integer     NOT NULL,
+    enabled      boolean     NOT NULL,
+    banner       text        NULL,
+    created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE NULLS NOT DISTINCT (parent_id, name),
+    CHECK ( is_leaf = FALSE OR banner IS NOT NULL )
+);
+
+-- 品牌
+CREATE TABLE IF NOT EXISTS brand
+(
+    id           integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name         text        NOT NULL,
+    created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (name)
+);
+
+-- 店铺
+CREATE TABLE IF NOT EXISTS store
+(
+    id           integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name         text        NOT NULL,
+    created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (name)
+);
+
+-- 商品
+CREATE TABLE IF NOT EXISTS spu
+(
+    id           integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    category_id  integer     NOT NULL REFERENCES product_category,
+    brand_id     integer     NOT NULL REFERENCES brand,
+    store_id     integer     NOT NULL REFERENCES store,
+    title        text        NOT NULL,
+    price        numeric     NOT NULL,
+    banner       text        NOT NULL,
+    created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 商品评价维度规格
+CREATE TABLE IF NOT EXISTS spu_comment_dimension_spec
+(
+    id           integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name         text        NOT NULL,
+    created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (name)
+);
+
+-- 商品评价维度
+CREATE TABLE IF NOT EXISTS spu_comment_dimension
+(
+    id           integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    spu_id       integer       NOT NULL REFERENCES spu,
+    spec_id      integer       NOT NULL REFERENCES spu_comment_dimension_spec,
+    weight       decimal(3, 2) NOT NULL CHECK (weight > 0 AND weight <= 1),
+    created_time timestamptz   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (spu_id, spec_id)
+);
+
+-- 商品评价
+CREATE TABLE IF NOT EXISTS spu_comment
+(
+    id              integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    spu_id          integer       NOT NULL REFERENCES spu,
+    user_id         integer       NOT NULL REFERENCES "user",
+    text            text          NOT NULL,
+    weighted_rating decimal(3, 2) NOT NULL,
+    created_time    timestamptz   NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 商品评价媒体
+CREATE TABLE IF NOT EXISTS spu_comment_media
+(
+    id           integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    comment_id   integer     NOT NULL REFERENCES spu_comment,
+    type         text        NOT NULL,
+    resource     text        NOT NULL,
+    created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 商品评价维度评分
+CREATE TABLE IF NOT EXISTS spu_comment_dimension_rating
+(
+    id           integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    dimension_id integer       NOT NULL REFERENCES spu_comment_dimension,
+    comment_id   integer       NOT NULL REFERENCES spu_comment,
+    rating       decimal(2, 1) NOT NULL,
+    created_time timestamptz   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (dimension_id, comment_id)
+);
+
+-- 商品摘要
+CREATE TABLE IF NOT EXISTS spu_summary
+(
+    id           integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    spu_id       integer     NOT NULL REFERENCES spu,
+    content      text        NOT NULL,
+    created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (spu_id, content)
+);
