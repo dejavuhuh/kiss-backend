@@ -9,7 +9,7 @@ services:
     labels:
       org.springframework.boot.jdbc.parameters: 'reWriteBatchedInserts=true'
     ports:
-      - '5432'
+      - '5433:5432'
   postgres-exporter:
     image: quay.io/prometheuscommunity/postgres-exporter
     container_name: postgres-exporter

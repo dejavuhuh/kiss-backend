@@ -341,12 +341,11 @@ CREATE TABLE IF NOT EXISTS spu_comment_dimension
 -- 商品评价
 CREATE TABLE IF NOT EXISTS spu_comment
 (
-    id              integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    spu_id          integer       NOT NULL REFERENCES spu,
-    user_id         integer       NOT NULL REFERENCES "user",
-    text            text          NOT NULL,
-    weighted_rating decimal(3, 2) NOT NULL,
-    created_time    timestamptz   NOT NULL DEFAULT CURRENT_TIMESTAMP
+    id           integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    spu_id       integer     NOT NULL REFERENCES spu,
+    user_id      integer     NOT NULL REFERENCES "user",
+    text         text        NOT NULL,
+    created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 商品评价媒体
@@ -379,3 +378,30 @@ CREATE TABLE IF NOT EXISTS spu_summary
     created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (spu_id, content)
 );
+
+-- 商品好评率-物化视图
+CREATE MATERIALIZED VIEW spu_positive_rating_ratio_mv AS
+SELECT c.spu_id,
+       CAST(COUNT(*) FILTER (WHERE v.weighted_score > 4) AS NUMERIC) / COUNT(c.id) AS positive_rating_ratio
+FROM (SELECT c.id,
+             c.spu_id,
+             SUM(r.rating * d.weight) / SUM(d.weight) AS weighted_score
+      FROM spu_comment AS c
+               JOIN
+           spu_comment_dimension_rating AS r ON c.id = r.comment_id
+               JOIN
+           spu_comment_dimension AS d ON r.dimension_id = d.id
+      GROUP BY c.id, c.spu_id) AS v
+         JOIN
+     spu_comment AS c ON v.id = c.id
+GROUP BY c.spu_id;
+
+-- 商品评论数-物化视图
+-- CREATE MATERIALIZED VIEW spu_comment_count_mv AS
+explain
+SELECT s.id        AS spu_id,
+       COUNT(c.id) AS comment_count
+FROM spu AS s
+         LEFT JOIN
+     spu_comment AS c ON s.id = c.spu_id
+GROUP BY s.id;
