@@ -1,9 +1,6 @@
 package kiss.s3
 
-import io.minio.BucketExistsArgs
-import io.minio.GetPresignedObjectUrlArgs
-import io.minio.MakeBucketArgs
-import io.minio.MinioClient
+import io.minio.*
 import io.minio.http.Method
 import jakarta.annotation.PostConstruct
 import org.springframework.http.MediaType
@@ -11,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.io.InputStream
 import java.net.URLEncoder
 import java.util.concurrent.TimeUnit
 
@@ -64,5 +62,14 @@ class S3Service(val minioClient: MinioClient) {
             .extraQueryParams(extraQueryParams)
             .build()
         return minioClient.getPresignedObjectUrl(args)
+    }
+
+    fun putObject(objectName: String, inputStream: InputStream) {
+        val args = PutObjectArgs.builder()
+            .bucket("static-resource")
+            .`object`(objectName)
+            .stream(inputStream, -1, 5242880)
+            .build()
+        minioClient.putObject(args)
     }
 }

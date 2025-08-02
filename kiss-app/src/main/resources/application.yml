@@ -32,6 +32,9 @@ spring:
   sql:
     init:
       mode: always
+  docker:
+    compose:
+      lifecycle-management: start_only
 server:
   port: 8000
 management:

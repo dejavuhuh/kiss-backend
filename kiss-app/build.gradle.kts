@@ -31,15 +31,14 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springframework.boot:spring-boot-starter-quartz")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     // jackson yaml
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("io.minio:minio:8.5.17")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("com.alipay.sdk:alipay-sdk-java:4.40.186.ALL") {
-        exclude(group = "commons-logging", module = "commons-logging")
-    }
+    implementation("com.alipay.sdk:alipay-sdk-java:4.40.186.ALL")
 
     implementation("org.apache.poi:poi:5.4.1")
     implementation("org.apache.poi:poi-ooxml:5.4.1")
@@ -62,9 +61,7 @@ dependencies {
         exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib")
     }
     implementation("org.mindrot:jbcrypt:0.4")
-    implementation("com.larksuite.oapi:oapi-sdk:2.4.14") {
-        exclude(group = "commons-logging", module = "commons-logging")
-    }
+    implementation("com.larksuite.oapi:oapi-sdk:2.4.14")
     implementation("com.google.genai:google-genai:1.7.0")
     implementation("io.github.smiley4:schema-kenerator-core:2.2.0")
     implementation("io.github.smiley4:schema-kenerator-jsonschema:2.2.0")
@@ -76,6 +73,10 @@ dependencies {
     testImplementation("org.testcontainers:minio:1.21.0")
     implementation("org.redisson:redisson-spring-boot-starter:3.50.0")
     testImplementation("com.redis:testcontainers-redis:2.2.4")
+}
+
+configurations.implementation {
+    exclude(group = "commons-logging", module = "commons-logging")
 }
 
 kotlin {

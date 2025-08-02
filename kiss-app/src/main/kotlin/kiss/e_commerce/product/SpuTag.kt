@@ -6,12 +6,12 @@ import org.babyfish.jimmer.sql.Key
 import org.babyfish.jimmer.sql.ManyToOne
 
 @Entity
-interface SpuSummary : BaseEntity {
+interface SpuTag : BaseEntity {
 
     @Key
     @ManyToOne
     val spu: Spu
 
     @Key
-    val content: String
+    val text: String
 }

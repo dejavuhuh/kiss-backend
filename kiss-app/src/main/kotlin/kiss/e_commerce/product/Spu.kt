@@ -60,8 +60,8 @@ interface Spu : BaseEntity {
     val comments: List<SpuComment>
 
     /**
-     * 商品摘要
+     * 商品标签
      */
     @OneToMany(mappedBy = "spu")
-    val summaries: List<SpuSummary>
+    val tags: List<SpuTag>
 }

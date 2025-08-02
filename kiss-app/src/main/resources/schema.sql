@@ -1,3 +1,14 @@
+DROP MATERIALIZED VIEW IF EXISTS spu_comment_count_mv;
+DROP MATERIALIZED VIEW IF EXISTS spu_positive_rating_ratio_mv;
+DROP TABLE IF EXISTS spu_tag;
+DROP TABLE IF EXISTS spu_comment_dimension_rating;
+DROP TABLE IF EXISTS spu_comment_media;
+DROP TABLE IF EXISTS spu_comment;
+DROP TABLE IF EXISTS spu_comment_dimension;
+DROP TABLE IF EXISTS spu_comment_dimension_spec;
+DROP TABLE IF EXISTS spu;
+DROP TABLE IF EXISTS store;
+DROP TABLE IF EXISTS brand;
 DROP TABLE IF EXISTS product_category;
 DROP MATERIALIZED VIEW IF EXISTS user_api_permissions_mv;
 DROP TABLE IF EXISTS export_task;
@@ -281,10 +292,8 @@ CREATE TABLE IF NOT EXISTS product_category
     is_leaf      boolean     NOT NULL,
     sort_order   integer     NOT NULL,
     enabled      boolean     NOT NULL,
-    banner       text        NULL,
     created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE NULLS NOT DISTINCT (parent_id, name),
-    CHECK ( is_leaf = FALSE OR banner IS NOT NULL )
+    UNIQUE NULLS NOT DISTINCT (parent_id, name)
 );
 
 -- 品牌
@@ -370,7 +379,7 @@ CREATE TABLE IF NOT EXISTS spu_comment_dimension_rating
 );
 
 -- 商品摘要
-CREATE TABLE IF NOT EXISTS spu_summary
+CREATE TABLE IF NOT EXISTS spu_tag
 (
     id           integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     spu_id       integer     NOT NULL REFERENCES spu,
@@ -397,8 +406,7 @@ FROM (SELECT c.id,
 GROUP BY c.spu_id;
 
 -- 商品评论数-物化视图
--- CREATE MATERIALIZED VIEW spu_comment_count_mv AS
-explain
+CREATE MATERIALIZED VIEW spu_comment_count_mv AS
 SELECT s.id        AS spu_id,
        COUNT(c.id) AS comment_count
 FROM spu AS s
