@@ -1,7 +1,7 @@
 package kiss.feishu
 
 import com.lark.oapi.core.response.BaseResponse
-import kiss.okhttp.json
+import kiss.infrastructure.okhttp.json
 import okhttp3.OkHttpClient
 import okhttp3.Request
 

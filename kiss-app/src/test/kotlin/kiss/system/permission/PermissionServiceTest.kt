@@ -1,10 +1,10 @@
-package kiss.system.permission
+package kiss.business.system.permission
 
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import kiss.SpringBootIntegrationTest
 import kiss.junit.MockUser
-import kiss.system.permission.dto.PermissionInput
+import kiss.business.system.permission.dto.PermissionInput
 import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

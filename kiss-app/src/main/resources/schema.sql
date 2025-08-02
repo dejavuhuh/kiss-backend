@@ -352,7 +352,6 @@ CREATE TABLE IF NOT EXISTS spu_comment
 (
     id           integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     spu_id       integer     NOT NULL REFERENCES spu,
-    user_id      integer     NOT NULL REFERENCES "user",
     text         text        NOT NULL,
     created_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

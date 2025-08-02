@@ -1,6 +1,6 @@
 package kiss.migration
 
-import kiss.jimmer.BaseEntity
+import kiss.infrastructure.jimmer.BaseEntity
 import org.babyfish.jimmer.sql.Entity
 
 @Entity

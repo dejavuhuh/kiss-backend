@@ -1,11 +1,11 @@
 package kiss.web
 
-import kiss.e_commerce.product.ProductCategoryProps
-import kiss.payment.subscription.SubscriptionPlanProps
-import kiss.system.config.ConfigProps
-import kiss.system.permission.PermissionProps
-import kiss.system.role.RoleProps
-import kiss.system.user.AccountProps
+import kiss.business.e_commerce.product.ProductCategoryProps
+import kiss.business.payment.subscription.SubscriptionPlanProps
+import kiss.business.system.config.ConfigProps
+import kiss.business.system.permission.PermissionProps
+import kiss.business.system.role.RoleProps
+import kiss.business.system.user.AccountProps
 import org.babyfish.jimmer.sql.exception.SaveException
 import org.babyfish.jimmer.sql.runtime.ExceptionTranslator
 import org.springframework.stereotype.Component

@@ -4,6 +4,9 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
 import kiss.RedisContainer
+import kiss.infrastructure.lock.DistributedLock
+import kiss.infrastructure.lock.DistributedLockAspect
+import kiss.infrastructure.lock.DistributedLockTemplate
 import kiss.web.BusinessException
 import org.junit.jupiter.api.Test
 import org.redisson.Redisson

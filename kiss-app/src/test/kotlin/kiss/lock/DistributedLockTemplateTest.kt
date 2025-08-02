@@ -5,6 +5,8 @@ import io.kotest.matchers.longs.shouldBeInRange
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import kiss.RedisContainer
+import kiss.infrastructure.lock.CannotAcquireLockException
+import kiss.infrastructure.lock.DistributedLockTemplate
 import org.junit.jupiter.api.Test
 import org.redisson.Redisson
 import org.redisson.config.Config

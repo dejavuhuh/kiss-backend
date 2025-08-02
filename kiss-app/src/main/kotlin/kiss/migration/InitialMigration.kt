@@ -1,13 +1,13 @@
 package kiss.migration
 
-import kiss.system.api.addBy
-import kiss.system.permission.Permission
-import kiss.system.permission.PermissionType
-import kiss.system.permission.addBy
-import kiss.system.permission.id
-import kiss.system.role.Role
-import kiss.system.user.Account
-import kiss.system.user.User
+import kiss.business.system.api.addBy
+import kiss.business.system.permission.Permission
+import kiss.business.system.permission.PermissionType
+import kiss.business.system.permission.addBy
+import kiss.business.system.permission.id
+import kiss.business.system.role.Role
+import kiss.business.system.user.Account
+import kiss.business.system.user.User
 import org.babyfish.jimmer.sql.ast.mutation.AssociatedSaveMode
 import org.babyfish.jimmer.sql.ast.mutation.SaveMode
 import org.babyfish.jimmer.sql.kt.KSqlClient

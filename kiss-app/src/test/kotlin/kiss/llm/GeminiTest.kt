@@ -3,7 +3,7 @@ package kiss.llm
 import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotBeEmpty
-import kiss.llm.provider.Gemini
+import kiss.business.llm.provider.Gemini
 import org.junit.jupiter.api.Test
 
 class GeminiTest {

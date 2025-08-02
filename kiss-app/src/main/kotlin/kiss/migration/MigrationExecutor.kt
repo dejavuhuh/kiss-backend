@@ -1,6 +1,6 @@
 package kiss.migration
 
-import kiss.jimmer.insertOnly
+import kiss.infrastructure.jimmer.insertOnly
 import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.babyfish.jimmer.sql.kt.ast.expression.max
 import org.springframework.boot.ApplicationArguments

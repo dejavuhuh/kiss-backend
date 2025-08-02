@@ -3,6 +3,7 @@ package kiss.cache
 import io.kotest.matchers.shouldBe
 import io.mockk.spyk
 import io.mockk.verify
+import kiss.infrastructure.cache.LocalCache
 import org.junit.jupiter.api.Test
 import java.util.concurrent.TimeUnit
 

@@ -1,8 +1,8 @@
 package kiss.alert
 
 import kiss.feishu.FeishuApi
-import kiss.system.config.ConfigCenter
-import kiss.system.config.readYamlAsObject
+import kiss.business.system.config.ConfigCenter
+import kiss.business.system.config.readYamlAsObject
 import org.springframework.stereotype.Component
 
 @Component

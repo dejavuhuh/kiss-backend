@@ -6,10 +6,10 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import com.lark.oapi.Client
 import com.lark.oapi.core.request.RequestOptions
 import com.lark.oapi.service.authen.v1.model.GetUserInfoRespBody
-import kiss.json.JsonSerializer
-import kiss.okhttp.json
-import kiss.system.config.ConfigCenter
-import kiss.system.config.readYamlAsObject
+import kiss.infrastructure.json.JsonSerializer
+import kiss.infrastructure.okhttp.json
+import kiss.business.system.config.ConfigCenter
+import kiss.business.system.config.readYamlAsObject
 import okhttp3.Request
 import org.springframework.stereotype.Component
 import java.time.Duration

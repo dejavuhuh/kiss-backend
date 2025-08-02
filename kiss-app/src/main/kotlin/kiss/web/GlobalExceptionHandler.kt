@@ -3,7 +3,7 @@ package kiss.web
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.servlet.http.HttpServletRequest
 import kiss.alert.AlertManager
-import kiss.trace.TraceIdHolder
+import kiss.web.trace.TraceIdHolder
 import org.apache.commons.codec.digest.DigestUtils.md5Hex
 import org.slf4j.MDC
 import org.springframework.http.HttpStatus
@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 
-private val log = KotlinLogging.logger {}
-
 @RestControllerAdvice
 class GlobalExceptionHandler(val alertManager: AlertManager) : ResponseEntityExceptionHandler() {
+
+    private val log = KotlinLogging.logger {}
 
     @ExceptionHandler
     fun handleBusinessException(ex: BusinessException): ProblemDetail {

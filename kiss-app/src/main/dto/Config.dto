@@ -1,4 +1,4 @@
-export kiss.system.config.Config
+export kiss.business.system.config.Config
 
 input ConfigInput {
     #allScalars(this)

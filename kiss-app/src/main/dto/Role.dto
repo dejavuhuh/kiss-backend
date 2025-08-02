@@ -1,4 +1,4 @@
-export kiss.system.role.Role
+export kiss.business.system.role.Role
 
 specification RoleSpecification {
     like/i(name)

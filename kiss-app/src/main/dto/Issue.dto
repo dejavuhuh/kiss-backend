@@ -1,4 +1,4 @@
-export kiss.issue.Issue
+export kiss.business.issue.Issue
 
 input IssueInput {
     #allScalars(this)

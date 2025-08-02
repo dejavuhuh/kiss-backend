@@ -1,6 +1,7 @@
 package kiss.json
 
 import io.kotest.matchers.shouldBe
+import kiss.infrastructure.json.JsonSerializer
 import org.junit.jupiter.api.Test
 import java.lang.reflect.ParameterizedType
 
@@ -33,6 +34,7 @@ class JsonSerializerTest {
                 override fun getRawType() = Generic::class.java
                 override fun getOwnerType() = null
             })
+
             override fun getRawType() = List::class.java
             override fun getOwnerType() = null
         }

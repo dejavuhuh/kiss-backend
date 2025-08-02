@@ -1,6 +1,6 @@
 package kiss
 
-import kiss.authentication.CurrentUserIdHolder
+import kiss.web.authentication.CurrentUserIdHolder
 
 fun withTestUser(block: () -> Unit) {
     CurrentUserIdHolder.set(1)

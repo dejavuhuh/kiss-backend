@@ -1,0 +1,35 @@
+package kiss.infrastructure.cache
+
+import kiss.infrastructure.json.JsonSerializer
+import kiss.infrastructure.redis.RedisClient
+import org.aspectj.lang.ProceedingJoinPoint
+import org.aspectj.lang.annotation.Around
+import org.aspectj.lang.annotation.Aspect
+import org.aspectj.lang.reflect.MethodSignature
+
+@Aspect
+object CacheableAspect {
+
+    lateinit var redisClient: RedisClient
+
+    @Around("@annotation(Cacheable) && execution(* *(..))")
+    fun intercept(joinPoint: ProceedingJoinPoint): Any? {
+        val args = joinPoint.args
+        val methodSignature = joinPoint.signature as MethodSignature
+
+        val hashKey = methodSignature.toString()
+        val hashField = args.joinToString("-")
+
+        val cachedValue = redisClient.hashGet(hashKey, hashField)
+        if (cachedValue != null) {
+            val returnType = methodSignature.method.genericReturnType
+            return JsonSerializer.deserialize(cachedValue, returnType)
+        }
+
+        val returnValue = joinPoint.proceed()
+        val serializedValue = JsonSerializer.serialize(returnValue)
+        redisClient.hashSet(hashKey, hashField, serializedValue)
+
+        return returnValue
+    }
+}

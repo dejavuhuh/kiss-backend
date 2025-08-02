@@ -1,6 +1,6 @@
 package kiss.junit
 
-import kiss.authentication.CurrentUserIdHolder
+import kiss.web.authentication.CurrentUserIdHolder
 import org.junit.jupiter.api.extension.AfterEachCallback
 import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext

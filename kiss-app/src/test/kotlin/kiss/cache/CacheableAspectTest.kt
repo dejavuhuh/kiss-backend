@@ -4,8 +4,10 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import kiss.json.JsonSerializer
-import kiss.redis.RedisClient
+import kiss.infrastructure.cache.Cacheable
+import kiss.infrastructure.cache.CacheableAspect
+import kiss.infrastructure.json.JsonSerializer
+import kiss.infrastructure.redis.RedisClient
 import org.junit.jupiter.api.Test
 
 class CacheableAspectTest {

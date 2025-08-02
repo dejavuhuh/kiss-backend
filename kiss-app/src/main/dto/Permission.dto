@@ -1,4 +1,4 @@
-export kiss.system.permission.Permission
+export kiss.business.system.permission.Permission
 
 input PermissionInput {
     #allScalars(this)

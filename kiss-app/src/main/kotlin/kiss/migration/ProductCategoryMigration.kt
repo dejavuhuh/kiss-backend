@@ -1,7 +1,7 @@
 package kiss.migration
 
-import kiss.e_commerce.product.ProductCategory
-import kiss.e_commerce.product.addBy
+import kiss.business.e_commerce.product.ProductCategory
+import kiss.business.e_commerce.product.addBy
 import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.springframework.stereotype.Component
 

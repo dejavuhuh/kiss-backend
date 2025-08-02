@@ -32,6 +32,8 @@ spring:
   sql:
     init:
       mode: always
+      data-locations:
+        - classpath:e-commerce.sql
   docker:
     compose:
       lifecycle-management: start_only
@@ -49,8 +51,8 @@ management:
       application: ${spring.application.name}
 logging:
   level:
-    kiss.authentication: debug
-    kiss.trace: debug
+    kiss.web.authentication: debug
+    kiss.web.trace: debug
   file:
     name: ${user.home}/logs/kiss.log
 minio:

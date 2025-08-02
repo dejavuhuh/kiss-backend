@@ -1,4 +1,4 @@
-export kiss.authentication.Session
+export kiss.web.authentication.Session
 
 specification SessionSpecification {
     id

@@ -1,10 +1,10 @@
 package kiss.feishu
 
 import com.lark.oapi.service.authen.v1.model.GetUserInfoRespBody
-import kiss.authentication.SessionRepository
-import kiss.system.user.FeishuUser
-import kiss.system.user.id
-import kiss.system.user.userId
+import kiss.web.authentication.SessionRepository
+import kiss.business.system.user.FeishuUser
+import kiss.business.system.user.id
+import kiss.business.system.user.userId
 import org.babyfish.jimmer.sql.ast.mutation.AssociatedSaveMode
 import org.babyfish.jimmer.sql.ast.mutation.SaveMode
 import org.babyfish.jimmer.sql.kt.KSqlClient

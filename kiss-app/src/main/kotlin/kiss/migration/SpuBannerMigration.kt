@@ -1,6 +1,6 @@
 package kiss.migration
 
-import kiss.s3.S3Service
+import kiss.infrastructure.s3.S3Service
 import org.springframework.stereotype.Component
 import java.net.URI
 

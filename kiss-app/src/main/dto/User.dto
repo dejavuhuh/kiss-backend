@@ -1,4 +1,4 @@
-export kiss.system.user.User
+export kiss.business.system.user.User
 
 specification UserSpecification {
     like/i(displayName)
