@@ -1,5 +1,0 @@
-export kiss.business.payment.subscription.SubscriptionPlan
-
-input SubscriptionPlanInput {
-    #allScalars(this)
-}

@@ -36,9 +36,9 @@ dependencies {
     // jackson yaml
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("io.minio:minio:8.5.17")
+    implementation("org.apache.commons:commons-lang3:3.18.0")
+    implementation("io.minio:minio:latest.release")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("com.alipay.sdk:alipay-sdk-java:4.40.186.ALL")
 
     implementation("org.apache.poi:poi:5.4.1")
     implementation("org.apache.poi:poi-ooxml:5.4.1")
@@ -60,6 +60,7 @@ dependencies {
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.3") {
         exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib")
     }
+    runtimeOnly("io.netty:netty-resolver-dns-native-macos::osx-aarch_64")
     implementation("org.mindrot:jbcrypt:0.4")
     implementation("com.larksuite.oapi:oapi-sdk:2.4.14")
     implementation("com.google.genai:google-genai:1.7.0")
