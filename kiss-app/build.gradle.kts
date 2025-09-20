@@ -5,7 +5,6 @@ plugins {
     kotlin("plugin.spring") version "2.1.20"
     id("com.google.devtools.ksp") version "2.1.20+"
     id("org.springframework.boot") version "3.4.3"
-    id("io.spring.dependency-management") version "1.1.7"
     id("io.freefair.aspectj.post-compile-weaving") version "8.13"
     jacoco
 }
@@ -24,6 +23,7 @@ repositories {
 }
 
 dependencies {
+    implementation(platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES))
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
     implementation("com.github.loki4j:loki-logback-appender:1.6.0")
@@ -43,7 +43,7 @@ dependencies {
     implementation("org.apache.poi:poi:5.4.1")
     implementation("org.apache.poi:poi-ooxml:5.4.1")
 
-    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
+    developmentOnly("org.springframework.boot:spring-boot-docker-compose:3.4.3")
     runtimeOnly("org.postgresql:postgresql")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.mockito")

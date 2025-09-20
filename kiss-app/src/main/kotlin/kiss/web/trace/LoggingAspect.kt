@@ -1,9 +1,9 @@
 package kiss.web.trace
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import kiss.infrastructure.json.JsonSerializer
 import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.annotation.Before
@@ -14,6 +14,12 @@ private val log = KotlinLogging.logger {}
 
 @Aspect
 class LoggingAspect {
+
+    lateinit var objectMapper: ObjectMapper
+
+    fun configure(objectMapper: ObjectMapper) {
+        this.objectMapper = objectMapper
+    }
 
     @Pointcut(
         """
@@ -44,7 +50,7 @@ class LoggingAspect {
                 methodArgs[argName] = arg
             }
 
-            val serializedArgs = JsonSerializer.serialize(methodArgs)
+            val serializedArgs = objectMapper.writeValueAsString(methodArgs)
 
             "进入REST端点|${className}.${methodName}|入参：$serializedArgs"
         }

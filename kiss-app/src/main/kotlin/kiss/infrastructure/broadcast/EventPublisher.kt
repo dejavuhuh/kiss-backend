@@ -1,6 +1,6 @@
 package kiss.infrastructure.broadcast
 
-import kiss.infrastructure.json.JsonSerializer
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.data.redis.connection.RedisConnectionFactory
@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component
 @Component
 class EventPublisher(
     val redisConnectionFactory: RedisConnectionFactory,
+    val objectMapper: ObjectMapper,
     eventListeners: List<EventListener<*>>,
 ) : ApplicationRunner {
 
@@ -17,7 +18,7 @@ class EventPublisher(
 
     fun publish(event: Any) {
         val channelToPublish = "${channelPrefix}:${event::class.qualifiedName}"
-        val serializedEvent = JsonSerializer.serialize(event)
+        val serializedEvent = objectMapper.writeValueAsString(event)
         redisConnectionFactory.connection.use {
             it.publish(channelToPublish.toByteArray(), serializedEvent.toByteArray())
         }
@@ -31,7 +32,7 @@ class EventPublisher(
 
             val listener = eventListenerMap[eventType]
                 ?: throw IllegalStateException("No listener for event type $eventType")
-            val event = JsonSerializer.deserialize(String(message.body), listener.eventType.java)
+            val event = objectMapper.readValue(String(message.body), listener.eventType.java)
                 ?: throw IllegalStateException("Deserialized event is null")
 
             @Suppress("UNCHECKED_CAST")
